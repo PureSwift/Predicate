@@ -7,7 +7,7 @@
 //
 
 /// Predicate type used to represent logical “gate” operations (AND/OR/NOT) and comparison operations.
-public enum Compound {
+public indirect enum Compound {
     
     case and([Predicate])
     case or([Predicate])
@@ -100,7 +100,7 @@ extension Compound: CustomStringConvertible {
             
             if showType {
                 
-                text += type.rawValue
+                text += type.rawValue + " "
             }
             
             text += predicate.description
@@ -119,9 +119,7 @@ public func && (lhs: Predicate, rhs: Predicate) -> Predicate {
 
 public func && (lhs: Predicate, rhs: [Predicate]) -> Predicate {
     
-    let subpredicate = Compound.and(rhs)
-    
-    return .compound(.and([lhs, .compound(subpredicate)]))
+    return .compound(.and([lhs] + rhs))
 }
 
 public func || (lhs: Predicate, rhs: Predicate) -> Predicate {
@@ -131,9 +129,7 @@ public func || (lhs: Predicate, rhs: Predicate) -> Predicate {
 
 public func || (lhs: Predicate, rhs: [Predicate]) -> Predicate {
     
-    let subpredicate = Compound.or(rhs)
-    
-    return .compound(.or([lhs, .compound(subpredicate)]))
+    return .compound(.or([lhs] + rhs))
 }
 
 public prefix func ! (rhs: Predicate) -> Predicate {

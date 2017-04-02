@@ -36,9 +36,9 @@ extension Predicate: CustomStringConvertible {
     public var description: String {
         
         switch self {
-        case let .comparison(predicate):    return predicate.description
-        case let .compound(predicate):      return predicate.description
-        case let .expression(expression):   return "\(expression)"
+        case let .comparison(value):    return "\(value)"
+        case let .compound(value):      return "\(value)"
+        case let .expression(value):    return "\(value)"
         }
     }
 }
@@ -63,4 +63,12 @@ extension Sequence where Iterator.Element: PredicateEvaluatable {
         
         return true
     }
+}
+
+// MARK: - Convert
+
+/// Value can be converted to a predicate, typically an expression constant value.
+public protocol PredicateConvertible {
+    
+    func toPredicate() -> Predicate
 }
