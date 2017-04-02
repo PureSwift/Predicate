@@ -7,28 +7,25 @@
 //
 
 /// Used to represent expressions in a predicate.
-public enum Expression: PredicateProtocol {
+public enum Expression {
     
     /// Expression that represents a given constant value.
-    case value(Any?)
+    case value(Value)
     
     /// Expression that invokes `value​For​Key​Path:​` with a given key path.
     case keyPath(String)
+}
+
+// MARK: - Equatable
+
+extension Expression: Equatable {
     
-    /// The Foundation `NSExpression` object.
-    case custom(NSExpression)
-    
-    /// Aggregate expression for a given collection.
-    case aggregate([Any])
-    
-    /// Expression that represents the union of a given set and collection.
-    case union(Expression, Expression)
-    
-    /// Expression that represents the intersection of a given set and collection.
-    case intersection(Expression, Expression)
-    
-    /// Expression that represents the subtraction of a given collection from a given set.
-    case minus(Expression, Expression)
-    
-    case custom()
+    public static func == (lhs: Expression, rhs: Expression) -> Bool {
+        
+        switch (lhs, rhs) {
+        case let (.keyPath(lhsValue), .keyPath(rhsValue)): return lhsValue == rhsValue
+        case let (.value(lhsValue), .value(rhsValue)): return lhsValue == rhsValue
+        default: return false
+        }
+    }
 }

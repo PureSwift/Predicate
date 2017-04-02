@@ -6,35 +6,39 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
-public protocol PredicateProtocol: Equatable, CustomStringConvertible { }
-
 /// You use predicates to represent logical conditions, used for describing objects in persistent stores and in-memory filtering of objects.
-public enum Predicate: PredicateProtocol {
+public enum Predicate {
     
     case comparison(Comparision)
     case compound(Compound)
+    case expression(Expression)
 }
 
 // MARK: - Equatable
 
-public func == (lhs: Predicate, rhs: Predicate) -> Bool {
+extension Predicate: Equatable {
     
-    switch (lhs, rhs) {
-    case let (.comparison(lhsValue), .comparison(rhsValue)): return lhsValue == rhsValue
-    case let (.compound(lhsValue), .compound(rhsValue)): return lhsValue == rhsValue
-    default: return false
+    public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
+        
+        switch (lhs, rhs) {
+        case let (.comparison(lhsValue), .comparison(rhsValue)): return lhsValue == rhsValue
+        case let (.compound(lhsValue), .compound(rhsValue)): return lhsValue == rhsValue
+        case let (.expression(lhsValue), .expression(rhsValue)): return lhsValue == rhsValue
+        default: return false
+        }
     }
 }
 
 // MARK: - CustomStringConvertible
 
-public extension Predicate {
+extension Predicate: CustomStringConvertible {
     
-    var description: String {
+    public var description: String {
         
         switch self {
         case let .comparison(predicate):    return predicate.description
         case let .compound(predicate):      return predicate.description
+        case let .expression(expression):   return "\(expression)"
         }
     }
 }

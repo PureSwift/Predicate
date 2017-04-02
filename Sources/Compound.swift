@@ -7,7 +7,7 @@
 //
 
 /// Predicate type used to represent logical “gate” operations (AND/OR/NOT) and comparison operations.
-public enum Compound: PredicateProtocol {
+public enum Compound {
     
     case and([Predicate])
     case or([Predicate])
@@ -57,21 +57,24 @@ public extension Compound {
 
 // MARK: - Equatable
 
-public func == (lhs: Compound, rhs: Compound) -> Bool {
+extension Compound: Equatable {
     
-    switch (lhs, rhs) {
-    case let (.and(lhsValue), .and(rhsValue)): return lhsValue == rhsValue
-    case let (.or(lhsValue), .or(rhsValue)): return lhsValue == rhsValue
-    case let (.not(lhsValue), .not(rhsValue)): return lhsValue == rhsValue
-    default: return false
+    public static func == (lhs: Compound, rhs: Compound) -> Bool {
+        
+        switch (lhs, rhs) {
+        case let (.and(lhsValue), .and(rhsValue)): return lhsValue == rhsValue
+        case let (.or(lhsValue), .or(rhsValue)): return lhsValue == rhsValue
+        case let (.not(lhsValue), .not(rhsValue)): return lhsValue == rhsValue
+        default: return false
+        }
     }
 }
 
 // MARK: - CustomStringConvertible
 
-public extension Compound {
+extension Compound: CustomStringConvertible {
     
-    var description: String {
+    public var description: String {
         
         guard subpredicates.isEmpty == false else {
             

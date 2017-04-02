@@ -6,23 +6,25 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
-public struct Comparision: PredicateProtocol {
+public struct Comparision {
     
-    public var expression: (left: Expression, rhs: Expression)
+    public var expression: (left: Expression, right: Expression)
     
     public var type: Operator
     
-    public var modifier: Modifier
+    public var modifier: Modifier?
     
     public var options: [Option]
     
     init(expression: (left: Expression, right: Expression),
-         type: Operator,
-         modifier: Modifier = .direct,
+         type: Operator = .equalTo,
+         modifier: Modifier? = nil,
          options: [Option] = []) {
         
-        self.expression = expresion
-        
+        self.expression = expression
+        self.type = type
+        self.modifier = modifier
+        self.options = options
     }
 }
 
@@ -32,7 +34,6 @@ public extension Comparision {
 
     public enum Modifier: String {
         
-        case direct     = "DIRECT"
         case all        = "ANY"
         case any        = "ALL"
     }
@@ -65,16 +66,19 @@ public extension Comparision {
 
 // MARK: - Equatable
 
-public func == (lhs: Comparision, rhs: Comparision) -> Bool {
+extension Comparision: Equatable {
     
-    return false
+    public static func == (lhs: Comparision, rhs: Comparision) -> Bool {
+        
+        return false
+    }
 }
 
 // MARK: - CustomStringConvertible
 
-public extension Comparision {
+extension Comparision: CustomStringConvertible {
     
-    var description: String {
+    public var description: String {
         
         return "WIP"
     }

@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		6EE674201E9184D1008A722F /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE6741F1E9184D1008A722F /* Expression.swift */; };
+		6EE674221E9192AD008A722F /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE674211E9192AD008A722F /* Value.swift */; };
 		6EE91C011E915AE80011E19F /* Predicate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EE91BF71E915AE80011E19F /* Predicate.framework */; };
 		6EE91C061E915AE80011E19F /* PredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C051E915AE80011E19F /* PredicateTests.swift */; };
 		6EE91C081E915AE80011E19F /* Predicate.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EE91BFA1E915AE80011E19F /* Predicate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6EE91C131E915B1F0011E19F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C121E915B1F0011E19F /* Predicate.swift */; };
-		6EE91C151E915BA70011E19F /* Compound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C141E915BA70011E19F /* Compound.swift */; };
 		6EE91C171E915BB60011E19F /* Comparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C161E915BB60011E19F /* Comparison.swift */; };
 		6EE91C191E915C180011E19F /* NSPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C181E915C180011E19F /* NSPredicate.swift */; };
+		6EF7EB6B1E91983E00D2BDD6 /* Compound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE91C141E915BA70011E19F /* Compound.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		6EE6741F1E9184D1008A722F /* Expression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
+		6EE674211E9192AD008A722F /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		6EE91BF71E915AE80011E19F /* Predicate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Predicate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE91BFA1E915AE80011E19F /* Predicate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Predicate.h; sourceTree = "<group>"; };
 		6EE91BFB1E915AE80011E19F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				6EE91C141E915BA70011E19F /* Compound.swift */,
 				6EE91C161E915BB60011E19F /* Comparison.swift */,
 				6EE6741F1E9184D1008A722F /* Expression.swift */,
+				6EE674211E9192AD008A722F /* Value.swift */,
 				6EE91C181E915C180011E19F /* NSPredicate.swift */,
 			);
 			name = Sources;
@@ -221,11 +224,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EE91C151E915BA70011E19F /* Compound.swift in Sources */,
 				6EE91C171E915BB60011E19F /* Comparison.swift in Sources */,
 				6EE91C191E915C180011E19F /* NSPredicate.swift in Sources */,
 				6EE91C131E915B1F0011E19F /* Predicate.swift in Sources */,
 				6EE674201E9184D1008A722F /* Expression.swift in Sources */,
+				6EF7EB6B1E91983E00D2BDD6 /* Compound.swift in Sources */,
+				6EE674221E9192AD008A722F /* Value.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -337,7 +341,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
