@@ -13,7 +13,20 @@ final class PredicateTests: XCTestCase {
     
     func testExample() {
         
-        let predicate: Predicate = .value(true) && .value(true) || .value(nil)
+        class Foo: NSObject {
+            var id: Int
+            var name: String
+            init(id: Int, name: String) {
+                self.id = id
+                self.name = name
+                super.init()
+            }
+        }
+        
+        let predicate: Predicate = #keyPath(Foo.id) > Int(0)
+            && #keyPath(Foo.id) != Int(99)
+            && .keyPath(#keyPath(Foo.name)) == .value(.string("Coleman"))
+            && #keyPath(Foo.name) != nil
         
         print(predicate)
     }

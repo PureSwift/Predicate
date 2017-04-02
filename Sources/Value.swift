@@ -68,7 +68,7 @@ extension Value: CustomStringConvertible {
         
         switch self {
         case .null:                 return "NULL"
-        case let .string(value):    return "\(value)"
+        case let .string(value):    return "\"\(value)\""
         case let .data(value):      return "\(value)"
         case let .date(value):      return "\(value)"
         case let .boolean(value):   return "\(value)"
