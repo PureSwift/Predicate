@@ -210,3 +210,61 @@ public func != <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     return .comparison(comparision)
 }
+
+// Extensions for KeyPath comparisions
+public extension String {
+    
+    func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type, options: options)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type, modifier: modifier, options: options)
+        
+        return .comparison(comparision)
+    }
+    
+    func any <Value: PredicateValue> (in collection: [Value]) -> Predicate {
+        
+        let values = collection.map { $0.predicateValue }
+        
+        let rightExpression = Expression.value(.collection(values))
+        
+        let comparision = Comparision(expression: (.keyPath(self), rightExpression), type: .`in`, modifier: .any)
+        
+        return .comparison(comparision)
+    }
+    
+    func all <Value: PredicateValue> (in collection: [Value]) -> Predicate {
+        
+        let values = collection.map { $0.predicateValue }
+        
+        let rightExpression = Expression.value(.collection(values))
+        
+        let comparision = Comparision(expression: (.keyPath(self), rightExpression), type: .`in`, modifier: .all)
+        
+        return .comparison(comparision)
+    }
+    
+    func `in` <Value: PredicateValue> (_ collection: [Value], options: Set<Comparision.Option> = []) -> Predicate {
+        
+        let values = collection.map { $0.predicateValue }
+        
+        let rightExpression = Expression.value(.collection(values))
+        
+        let comparision = Comparision(expression: (.keyPath(self), rightExpression), type: .`in`, options: options)
+        
+        return .comparison(comparision)
+    }
+}
