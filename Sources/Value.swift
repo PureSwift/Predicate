@@ -62,7 +62,24 @@ extension Value: CustomStringConvertible {
         case let .int64(value):     return "\(value)"
         case let .float(value):     return "\(value)"
         case let .double(value):    return "\(value)"
-        case let .collection(value): return "\(value)"
+            
+        case let .collection(values):
+            
+            var text = "{"
+            
+            for (index, value) in values.enumerated() {
+                
+                text += value.description
+                
+                if index != values.count - 1 {
+                    
+                    text += ", "
+                }
+            }
+            
+            text += "}"
+            
+            return text
         }
     }
 }

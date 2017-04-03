@@ -34,8 +34,8 @@ public extension Comparision {
 
     public enum Modifier: String {
         
-        case all        = "ANY"
-        case any        = "ALL"
+        case all        = "ALL"
+        case any        = "ANY"
     }
     
     public enum Option: String {
