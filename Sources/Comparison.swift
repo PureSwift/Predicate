@@ -41,17 +41,17 @@ public extension Comparision {
     public enum Option: String {
         
         /// A case-insensitive predicate.
-        case caseInsensitive        = "[c]"
+        case caseInsensitive        = "c"
         
         /// A diacritic-insensitive predicate.
-        case diacriticInsensitive   = "[d]"
+        case diacriticInsensitive   = "d"
         
         /// Indicates that the strings to be compared have been preprocessed.
-        case normalized             = "[n]"
+        case normalized             = "n"
         
         /// Indicates that strings to be compared using `<`, `<=`, `=`, `=>`, `>`
         /// should be handled in a locale-aware fashion.
-        case localeSensitive        = "[l]"
+        case localeSensitive        = "l"
     }
     
     public enum Operator: String {
@@ -98,9 +98,10 @@ extension Comparision: CustomStringConvertible {
         
         let type = self.type.rawValue
         
-        let options = self.options
+        let options = self.options.isEmpty ? "" : "[" + self.options
             .sorted(by: { $0.0.rawValue < $0.1.rawValue })
             .reduce("") { $0.0 + $0.1.rawValue }
+            + "]"
         
         let rightExpression = "\(self.expression.right)"
         

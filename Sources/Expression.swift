@@ -73,21 +73,21 @@ public extension String {
     
     func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type)
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type)
         
         return .comparison(comparision)
     }
     
     func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type, options: options)
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type, options: options)
         
         return .comparison(comparision)
     }
     
     func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type, modifier: modifier, options: options)
+        let comparision = Comparision(expression: (.keyPath(self), rhs), type: type, modifier: modifier, options: options)
         
         return .comparison(comparision)
     }

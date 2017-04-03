@@ -25,7 +25,8 @@ final class PredicateTests: XCTestCase {
         
         let predicate: Predicate = #keyPath(Foo.id) > Int64(0)
             && #keyPath(Foo.id) != Int64(99)
-            && (#keyPath(Foo.name)).compare(.contains, [.caseInsensitive], .value(.string("Cole")))
+            && (#keyPath(Foo.name)).compare(.contains, [.diacriticInsensitive, .caseInsensitive], .value(.string("Cole")))
+            && (#keyPath(Foo.name)).compare(.contains, [.caseInsensitive, .diacriticInsensitive, .localeSensitive, .normalized], .value(.string("Cole")))
             && (#keyPath(Foo.name)).compare(.like, .value(.string("Cole")))
         
         print(predicate)

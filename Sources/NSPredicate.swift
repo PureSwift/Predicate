@@ -102,9 +102,13 @@ public extension Comparision.Option {
         
         /// `NSLocale​Sensitive​Predicate​Option` is not availible in Swift for some reason.
         /// Lack of Swift annotation it seems.
-        let rawValue = unsafeBitCast(self, to: UInt8.self)
         
-        return NSComparisonPredicate.Options(rawValue: UInt(rawValue))
+        switch self {
+        case .caseInsensitive: return .caseInsensitive
+        case .diacriticInsensitive: return .diacriticInsensitive
+        case .normalized: return .normalized
+        case .localeSensitive: return NSComparisonPredicate.Options(rawValue: 0x08)
+        }
     }
 }
 
