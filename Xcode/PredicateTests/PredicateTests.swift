@@ -11,7 +11,7 @@ import XCTest
 
 final class PredicateTests: XCTestCase {
     
-    func testExample() {
+    func testPredicate1() {
         
         class Foo: NSObject {
             var id: Int
@@ -29,7 +29,11 @@ final class PredicateTests: XCTestCase {
             && (#keyPath(Foo.name)).compare(.contains, [.caseInsensitive, .diacriticInsensitive, .localeSensitive, .normalized], .value(.string("Cole")))
             && (#keyPath(Foo.name)).compare(.like, .value(.string("Cole")))
         
+        let converted = predicate.toFoundation()
+        
         print(predicate)
-        print(predicate.toFoundation())
+        print(converted)
+        
+        XCTAssert(predicate.description == converted.description)
     }
 }

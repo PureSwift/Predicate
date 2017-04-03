@@ -103,10 +103,17 @@ extension Compound: CustomStringConvertible {
                 text += type.rawValue + " "
             }
             
-            text += predicate.description
+            let includeBrackets: Bool
+            
+            switch predicate {
+            case .compound: includeBrackets = true
+            case .comparison, .value: includeBrackets = false
+            }
+            
+            text += includeBrackets ? "(" + predicate.description + ")" : predicate.description
         }
         
-        return "(" + text + ")"
+        return text
     }
 }
 
