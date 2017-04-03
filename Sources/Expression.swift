@@ -43,12 +43,55 @@ extension Expression: CustomStringConvertible {
     }
 }
 
-// MARK: - Predicate Extensions
+// MARK: - Extensions
 
 public extension Predicate {
     
     static func keyPath(_ keyPath: String) -> Predicate {
         
         return .expression(.keyPath(keyPath))
+    }
+}
+
+public extension String {
+    
+    func compare <Value: PredicateValue> (_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ value: Value) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), .value(value.predicateValue)), type: type)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare(_ type: Comparision.Operator, _ keyPath: String) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), .keyPath(keyPath)), type: type)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare <Value: PredicateValue> (modifier: Comparision.Modifier?, type: Comparision.Operator, options: Set<Comparision.Option>, value: Value) -> Predicate {
+        
+        let comparision = Comparision(expression: (.keyPath(self), .value(value.predicateValue)),
+                                      type: type,
+                                      modifier: modifier,
+                                      options: options)
+        
+        return .comparison(comparision)
+    }
+}
+
+public extension Expression {
+    
+    func compare(_ modifier: Comparision.Modifier? = nil,
+                 _ type: Comparision.Operator,
+                 _ options: Set<Comparision.Option> = [],
+                 _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (self, rhs),
+                                      type: type,
+                                      modifier: modifier,
+                                      options: options)
+        
+        return .comparison(comparision)
     }
 }
