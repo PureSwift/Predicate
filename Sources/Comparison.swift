@@ -174,7 +174,7 @@ public func < <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 public func <= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     let comparision = Comparision(expression: (left: .keyPath(lhs), right: .value(rhs.predicateValue)),
-                                  type: .lessThan)
+                                  type: .lessThanOrEqualTo)
     
     return .comparison(comparision)
 }
@@ -182,7 +182,7 @@ public func <= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 public func > <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     let comparision = Comparision(expression: (left: .keyPath(lhs), right: .value(rhs.predicateValue)),
-                                  type: .lessThan)
+                                  type: .greaterThan)
     
     return .comparison(comparision)
 }
@@ -190,7 +190,7 @@ public func > <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 public func >= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     let comparision = Comparision(expression: (left: .keyPath(lhs), right: .value(rhs.predicateValue)),
-                                  type: .lessThan)
+                                  type: .greaterThanOrEqualTo)
     
     return .comparison(comparision)
 }
@@ -198,7 +198,7 @@ public func >= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 public func == <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     let comparision = Comparision(expression: (left: .keyPath(lhs), right: .value(rhs.predicateValue)),
-                                  type: .lessThan)
+                                  type: .equalTo)
     
     return .comparison(comparision)
 }
@@ -206,7 +206,7 @@ public func == <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 public func != <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
     let comparision = Comparision(expression: (left: .keyPath(lhs), right: .value(rhs.predicateValue)),
-                                  type: .lessThan)
+                                  type: .notEqualTo)
     
     return .comparison(comparision)
 }
