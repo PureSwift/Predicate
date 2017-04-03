@@ -45,52 +45,49 @@ extension Expression: CustomStringConvertible {
 
 // MARK: - Extensions
 
-public extension Predicate {
+public extension Expression {
     
-    static func keyPath(_ keyPath: String) -> Predicate {
+    func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
         
-        return .expression(.keyPath(keyPath))
+        let comparision = Comparision(expression: (self, rhs), type: type)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (self, rhs), type: type, options: options)
+        
+        return .comparison(comparision)
+    }
+    
+    func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+        
+        let comparision = Comparision(expression: (self, rhs), type: type, modifier: modifier, options: options)
+        
+        return .comparison(comparision)
     }
 }
 
 public extension String {
     
-    func compare <Value: PredicateValue> (_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ value: Value) -> Predicate {
+    func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (.keyPath(self), .value(value.predicateValue)), type: type)
-        
-        return .comparison(comparision)
-    }
-    
-    func compare(_ type: Comparision.Operator, _ keyPath: String) -> Predicate {
-        
-        let comparision = Comparision(expression: (.keyPath(self), .keyPath(keyPath)), type: type)
+        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type)
         
         return .comparison(comparision)
     }
     
-    func compare <Value: PredicateValue> (modifier: Comparision.Modifier?, type: Comparision.Operator, options: Set<Comparision.Option>, value: Value) -> Predicate {
+    func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (.keyPath(self), .value(value.predicateValue)),
-                                      type: type,
-                                      modifier: modifier,
-                                      options: options)
+        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type, options: options)
         
         return .comparison(comparision)
     }
-}
-
-public extension Expression {
     
-    func compare(_ modifier: Comparision.Modifier? = nil,
-                 _ type: Comparision.Operator,
-                 _ options: Set<Comparision.Option> = [],
-                 _ rhs: Expression) -> Predicate {
+    func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(expression: (self, rhs),
-                                      type: type,
-                                      modifier: modifier,
-                                      options: options)
+        let comparision = Comparision(expression: (.value(.string(self)), rhs), type: type, modifier: modifier, options: options)
         
         return .comparison(comparision)
     }

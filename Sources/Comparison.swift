@@ -40,9 +40,17 @@ public extension Comparision {
     
     public enum Option: String {
         
+        /// A case-insensitive predicate.
         case caseInsensitive        = "[c]"
+        
+        /// A diacritic-insensitive predicate.
         case diacriticInsensitive   = "[d]"
+        
+        /// Indicates that the strings to be compared have been preprocessed.
         case normalized             = "[n]"
+        
+        /// Indicates that strings to be compared using `<`, `<=`, `=`, `=>`, `>`
+        /// should be handled in a locale-aware fashion.
         case localeSensitive        = "[l]"
     }
     

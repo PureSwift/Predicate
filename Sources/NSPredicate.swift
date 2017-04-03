@@ -15,3 +15,126 @@ public extension NSPredicate {
         fatalError()
     }
 }
+
+public extension Predicate {
+    
+    func toFoundation() -> NSPredicate {
+        
+        switch self {
+        case let .compound(predicate): return predicate.toFoundation()
+        case let .comparison(predicate): return predicate.toFoundation()
+        case let .value(value): return NSPredicate(value: value)
+        }
+    }
+}
+
+public extension Compound {
+    
+    func toFoundation() -> NSCompoundPredicate {
+        
+        let subpredicates = self.subpredicates.map { $0.toFoundation() }
+        
+        return NSCompoundPredicate(type: type.toFoundation(), subpredicates: subpredicates)
+    }
+}
+
+public extension Compound.Logical​Type {
+    
+    func toFoundation() -> NSCompoundPredicate.LogicalType {
+        switch self {
+        case .and: return .and
+        case .or: return .or
+        case .not: return .or
+        }
+    }
+}
+
+public extension Comparision {
+    
+    func toFoundation() -> NSComparisonPredicate {
+        
+        let options = self.options.reduce(NSComparisonPredicate.Options(), { $0.0.union($0.1.toFoundation()) })
+        
+        return NSComparisonPredicate(leftExpression: expression.left.toFoundation(),
+                                     rightExpression: expression.right.toFoundation(),
+                                     modifier: modifier?.toFoundation() ?? .direct,
+                                     type: type.toFoundation(),
+                                     options: options)
+    }
+}
+
+public extension Comparision.Modifier {
+    
+    func toFoundation() -> NSComparisonPredicate.Modifier {
+        
+        switch self {
+        case .all: return .all
+        case .any: return .any
+        }
+    }
+}
+
+public extension Comparision.Operator {
+    
+    func toFoundation() -> NSComparisonPredicate.Operator {
+        
+        switch self {
+        case .lessThan:             return .lessThan
+        case .lessThanOrEqualTo:    return .lessThanOrEqualTo
+        case .greaterThan:          return .greaterThan
+        case .greaterThanOrEqualTo: return .greaterThanOrEqualTo
+        case .equalTo:              return .equalTo
+        case .notEqualTo:           return .notEqualTo
+        case .matches:              return .matches
+        case .like:                 return .like
+        case .beginsWith:           return .beginsWith
+        case .endsWith:             return .endsWith
+        case .`in`:                 return .`in`
+        case .contains:             return .contains
+        case .between:              return .between
+        }
+    }
+}
+
+public extension Comparision.Option {
+    
+    func toFoundation() -> NSComparisonPredicate.Options {
+        
+        /// `NSLocale​Sensitive​Predicate​Option` is not availible in Swift for some reason.
+        /// Lack of Swift annotation it seems.
+        let rawValue = unsafeBitCast(self, to: UInt8.self)
+        
+        return NSComparisonPredicate.Options(rawValue: UInt(rawValue))
+    }
+}
+
+public extension Expression {
+    
+    func toFoundation() -> NSExpression {
+        
+        switch self {
+        case let .keyPath(keyPath): return NSExpression(forKeyPath: keyPath)
+        case let .value(value): return NSExpression(forConstantValue: value.toFoundation())
+        }
+    }
+}
+
+public extension Value {
+    
+    func toFoundation() -> AnyObject? {
+        
+        switch self {
+        case .null: return nil
+        case let .string(value):    return value as NSString
+        case let .data(value):      return value as NSData
+        case let .date(value):      return value as NSDate
+        case let .bool(value):      return value as NSNumber
+        case let .int16(value):     return value as NSNumber
+        case let .int32(value):     return value as NSNumber
+        case let .int64(value):     return value as NSNumber
+        case let .float(value):     return value as NSNumber
+        case let .double(value):    return value as NSNumber
+        case let .collection(value): return value.map({ $0.toFoundation() }) as NSArray
+        }
+    }
+}

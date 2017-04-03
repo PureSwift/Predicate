@@ -13,10 +13,13 @@ public enum Value {
     case string(String)
     case data(Data)
     case date(Date)
-    case boolean(Bool)
-    case integer(Int)
+    case bool(Bool)
+    case int16(Int16)
+    case int32(Int32)
+    case int64(Int64)
     case float(Float)
     case double(Double)
+    case collection([Value])
 }
 
 // MARK: - Equatable
@@ -30,10 +33,13 @@ extension Value: Equatable {
         case let (.string(lhsValue), .string(rhsValue)):    return lhsValue == rhsValue
         case let (.data(lhsValue), .data(rhsValue)):        return lhsValue == rhsValue
         case let (.date(lhsValue), .date(rhsValue)):        return lhsValue == rhsValue
-        case let (.boolean(lhsValue), .boolean(rhsValue)):  return lhsValue == rhsValue
-        case let (.integer(lhsValue), .integer(rhsValue)):  return lhsValue == rhsValue
+        case let (.bool(lhsValue), .bool(rhsValue)):        return lhsValue == rhsValue
+        case let (.int16(lhsValue), .int16(rhsValue)):      return lhsValue == rhsValue
+        case let (.int32(lhsValue), .int32(rhsValue)):      return lhsValue == rhsValue
+        case let (.int64(lhsValue), .int64(rhsValue)):      return lhsValue == rhsValue
         case let (.float(lhsValue), .float(rhsValue)):      return lhsValue == rhsValue
         case let (.double(lhsValue), .double(rhsValue)):    return lhsValue == rhsValue
+        case let (.collection(lhsValue), .collection(rhsValue)): return lhsValue == rhsValue
         default: return false
         }
     }
@@ -43,27 +49,6 @@ extension Value: Equatable {
 
 extension Value: CustomStringConvertible {
     
-    /// A textual representation of this instance.
-    ///
-    /// Instead of accessing this property directly, convert an instance of any
-    /// type to a string by using the `String(describing:)` initializer. For
-    /// example:
-    ///
-    ///     struct Point: CustomStringConvertible {
-    ///         let x: Int, y: Int
-    ///
-    ///         var description: String {
-    ///             return "(\(x), \(y))"
-    ///         }
-    ///     }
-    ///
-    ///     let p = Point(x: 21, y: 30)
-    ///     let s = String(describing: p)
-    ///     print(s)
-    ///     // Prints "(21, 30)"
-    ///
-    /// The conversion of `p` to a string in the assignment to `s` uses the
-    /// `Point` type's `description` property.
     public var description: String {
         
         switch self {
@@ -71,10 +56,13 @@ extension Value: CustomStringConvertible {
         case let .string(value):    return "\"\(value)\""
         case let .data(value):      return "\(value)"
         case let .date(value):      return "\(value)"
-        case let .boolean(value):   return "\(value)"
-        case let .integer(value):   return "\(value)"
+        case let .bool(value):      return "\(value)"
+        case let .int16(value):     return "\(value)"
+        case let .int32(value):     return "\(value)"
+        case let .int64(value):     return "\(value)"
         case let .float(value):     return "\(value)"
         case let .double(value):    return "\(value)"
+        case let .collection(value): return "\(value)"
         }
     }
 }
@@ -99,11 +87,19 @@ extension Date: PredicateValue {
 }
 
 extension Bool: PredicateValue {
-    public var predicateValue: Value { return .boolean(self) }
+    public var predicateValue: Value { return .bool(self) }
 }
 
-extension Int: PredicateValue {
-    public var predicateValue: Value { return .integer(self) }
+extension Int16: PredicateValue {
+    public var predicateValue: Value { return .int16(self) }
+}
+
+extension Int32: PredicateValue {
+    public var predicateValue: Value { return .int32(self) }
+}
+
+extension Int64: PredicateValue {
+    public var predicateValue: Value { return .int64(self) }
 }
 
 extension Float: PredicateValue {
@@ -114,14 +110,6 @@ extension Double: PredicateValue {
     public var predicateValue: Value { return .double(self) }
 }
 
-// MARK: - Predicate Extensions
-
-public extension Predicate {
-    
-    static func value(_ rawValue: PredicateValue?) -> Predicate {
-        
-        guard let value = rawValue else { return .expression(.value(.null)) }
-        
-        return .expression(.value(value.predicateValue))
-    }
+extension Array where Element: PredicateValue {
+    public var predicateValue: Value { return .collection(self.map({ $0.predicateValue })) }
 }

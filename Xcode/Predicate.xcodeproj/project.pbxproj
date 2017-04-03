@@ -224,12 +224,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EE91C171E915BB60011E19F /* Comparison.swift in Sources */,
-				6EE91C191E915C180011E19F /* NSPredicate.swift in Sources */,
 				6EE91C131E915B1F0011E19F /* Predicate.swift in Sources */,
-				6EE674201E9184D1008A722F /* Expression.swift in Sources */,
+				6EE91C171E915BB60011E19F /* Comparison.swift in Sources */,
 				6EF7EB6B1E91983E00D2BDD6 /* Compound.swift in Sources */,
 				6EE674221E9192AD008A722F /* Value.swift in Sources */,
+				6EE674201E9184D1008A722F /* Expression.swift in Sources */,
+				6EE91C191E915C180011E19F /* NSPredicate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +367,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.pureswift.Predicate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;

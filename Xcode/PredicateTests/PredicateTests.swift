@@ -23,11 +23,12 @@ final class PredicateTests: XCTestCase {
             }
         }
         
-        let predicate: Predicate = #keyPath(Foo.id) > Int(0)
-            && #keyPath(Foo.id) != Int(99)
-             && (#keyPath(Foo.name)).compare(.contains, [.caseInsensitive], "Cole")
-            && (#keyPath(Foo.name)).compare(.like, "Coleman")
+        let predicate: Predicate = #keyPath(Foo.id) > Int64(0)
+            && #keyPath(Foo.id) != Int64(99)
+            && (#keyPath(Foo.name)).compare(.contains, [.caseInsensitive], .value(.string("Cole")))
+            && (#keyPath(Foo.name)).compare(.like, .value(.string("Cole")))
         
         print(predicate)
+        print(predicate.toFoundation())
     }
 }

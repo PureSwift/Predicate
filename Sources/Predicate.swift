@@ -11,7 +11,7 @@ public enum Predicate {
     
     case comparison(Comparision)
     case compound(Compound)
-    case expression(Expression)
+    case value(Bool)
 }
 
 // MARK: - Equatable
@@ -23,7 +23,7 @@ extension Predicate: Equatable {
         switch (lhs, rhs) {
         case let (.comparison(lhsValue), .comparison(rhsValue)): return lhsValue == rhsValue
         case let (.compound(lhsValue), .compound(rhsValue)): return lhsValue == rhsValue
-        case let (.expression(lhsValue), .expression(rhsValue)): return lhsValue == rhsValue
+        case let (.value(lhsValue), .value(rhsValue)): return lhsValue == rhsValue
         default: return false
         }
     }
@@ -38,7 +38,7 @@ extension Predicate: CustomStringConvertible {
         switch self {
         case let .comparison(value):    return "\(value)"
         case let .compound(value):      return "\(value)"
-        case let .expression(value):    return "\(value)"
+        case let .value(value):         return "\(value)"
         }
     }
 }
