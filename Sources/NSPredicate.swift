@@ -44,7 +44,7 @@ public extension Compound.Logical​Type {
         switch self {
         case .and: return .and
         case .or: return .or
-        case .not: return .or
+        case .not: return .not
         }
     }
 }
