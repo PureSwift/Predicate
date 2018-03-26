@@ -6,6 +6,8 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
+import Foundation
+
 /// Constant value used in predicate expressions.
 public enum Value {
     
