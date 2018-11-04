@@ -9,7 +9,7 @@
 import Foundation
 
 /// Constant value used in predicate expressions.
-public enum Value {
+public enum Value: Equatable {
     
     case null
     case string(String)
@@ -24,25 +24,38 @@ public enum Value {
     case collection([Value])
 }
 
-// MARK: - Equatable
-
-extension Value: Equatable {
+/// Predicate Value Type
+public enum ValueType: String, Codable {
     
-    public static func == (lhs: Value, rhs: Value) -> Bool {
+    case null
+    case string
+    case data
+    case date
+    case bool
+    case int16
+    case int32
+    case int64
+    case float
+    case double
+    case collection
+}
+
+public extension Value {
+    
+    var type: ValueType {
         
-        switch (lhs, rhs) {
-        case (.null, .null):                                return true
-        case let (.string(lhsValue), .string(rhsValue)):    return lhsValue == rhsValue
-        case let (.data(lhsValue), .data(rhsValue)):        return lhsValue == rhsValue
-        case let (.date(lhsValue), .date(rhsValue)):        return lhsValue == rhsValue
-        case let (.bool(lhsValue), .bool(rhsValue)):        return lhsValue == rhsValue
-        case let (.int16(lhsValue), .int16(rhsValue)):      return lhsValue == rhsValue
-        case let (.int32(lhsValue), .int32(rhsValue)):      return lhsValue == rhsValue
-        case let (.int64(lhsValue), .int64(rhsValue)):      return lhsValue == rhsValue
-        case let (.float(lhsValue), .float(rhsValue)):      return lhsValue == rhsValue
-        case let (.double(lhsValue), .double(rhsValue)):    return lhsValue == rhsValue
-        case let (.collection(lhsValue), .collection(rhsValue)): return lhsValue == rhsValue
-        default: return false
+        switch self {
+        case .null: return .null
+        case .string: return .string
+        case .data: return .data
+        case .date: return .date
+        case .bool: return .bool
+        case .int16: return .int16
+        case .int32: return .int32
+        case .int64: return .int64
+        case .float: return .float
+        case .double: return .double
+        case .collection: return .collection
         }
     }
 }
@@ -56,14 +69,14 @@ extension Value: CustomStringConvertible {
         switch self {
         case .null:                 return "NULL"
         case let .string(value):    return "\"\(value)\""
-        case let .data(value):      return "\(value)"
-        case let .date(value):      return "\(value)"
-        case let .bool(value):      return "\(value)"
-        case let .int16(value):     return "\(value)"
-        case let .int32(value):     return "\(value)"
-        case let .int64(value):     return "\(value)"
-        case let .float(value):     return "\(value)"
-        case let .double(value):    return "\(value)"
+        case let .data(value):      return value.description
+        case let .date(value):      return value.description
+        case let .bool(value):      return value.description
+        case let .int16(value):     return value.description
+        case let .int32(value):     return value.description
+        case let .int64(value):     return value.description
+        case let .float(value):     return value.description
+        case let .double(value):    return value.description
             
         case let .collection(values):
             
@@ -82,6 +95,91 @@ extension Value: CustomStringConvertible {
             text += "}"
             
             return text
+        }
+    }
+}
+
+// MARK: - Codable
+
+extension Value: Codable {
+    
+    internal enum CodingKeys: String, CodingKey {
+        
+        case type
+        case value
+    }
+    
+    public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let type = try container.decode(ValueType.self, forKey: .type)
+        
+        switch type {
+        case .null:
+            self = .null
+        case .string:
+            let value = try container.decode(String.self, forKey: .value)
+            self = .string(value)
+        case .data:
+            let value = try container.decode(Data.self, forKey: .value)
+            self = .data(value)
+        case .date:
+            let value = try container.decode(Date.self, forKey: .value)
+            self = .date(value)
+        case .bool:
+            let value = try container.decode(Bool.self, forKey: .value)
+            self = .bool(value)
+        case .int16:
+            let value = try container.decode(Int16.self, forKey: .value)
+            self = .int16(value)
+        case .int32:
+            let value = try container.decode(Int32.self, forKey: .value)
+            self = .int32(value)
+        case .int64:
+            let value = try container.decode(Int64.self, forKey: .value)
+            self = .int64(value)
+        case .float:
+            let value = try container.decode(Float.self, forKey: .value)
+            self = .float(value)
+        case .double:
+            let value = try container.decode(Double.self, forKey: .value)
+            self = .double(value)
+        case .collection:
+            let value = try container.decode([Value].self, forKey: .value)
+            self = .collection(value)
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(type, forKey: .type)
+        
+        switch self {
+        case .null:
+            break // dont encode any value
+        case let .string(value):
+            try container.encode(value, forKey: .value)
+        case let .data(value):
+            try container.encode(value, forKey: .value)
+        case let .date(value):
+            try container.encode(value, forKey: .value)
+        case let .bool(value):
+            try container.encode(value, forKey: .value)
+        case let .int16(value):
+            try container.encode(value, forKey: .value)
+        case let .int32(value):
+            try container.encode(value, forKey: .value)
+        case let .int64(value):
+            try container.encode(value, forKey: .value)
+        case let .float(value):
+            try container.encode(value, forKey: .value)
+        case let .double(value):
+            try container.encode(value, forKey: .value)
+        case let .collection(value):
+            try container.encode(value, forKey: .value)
         }
     }
 }

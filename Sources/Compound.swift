@@ -7,7 +7,7 @@
 //
 
 /// Predicate type used to represent logical “gate” operations (AND/OR/NOT) and comparison operations.
-public indirect enum Compound {
+public indirect enum Compound: Equatable {
     
     case and([Predicate])
     case or([Predicate])
@@ -42,7 +42,7 @@ public extension Compound {
 public extension Compound {
     
     /// Possible Compund Predicate types.
-    public enum Logical​Type: String {
+    public enum Logical​Type: String, Codable {
         
         /// A logical NOT predicate.
         case not = "NOT"
@@ -52,21 +52,6 @@ public extension Compound {
         
         /// A logical OR predicate.
         case or = "OR"
-    }
-}
-
-// MARK: - Equatable
-
-extension Compound: Equatable {
-    
-    public static func == (lhs: Compound, rhs: Compound) -> Bool {
-        
-        switch (lhs, rhs) {
-        case let (.and(lhsValue), .and(rhsValue)): return lhsValue == rhsValue
-        case let (.or(lhsValue), .or(rhsValue)): return lhsValue == rhsValue
-        case let (.not(lhsValue), .not(rhsValue)): return lhsValue == rhsValue
-        default: return false
-        }
     }
 }
 
@@ -114,6 +99,53 @@ extension Compound: CustomStringConvertible {
         }
         
         return text
+    }
+}
+
+
+// MARK: - Codable
+
+extension Compound: Codable {
+    
+    internal enum CodingKeys: String, CodingKey {
+        
+        case type
+        case predicates
+    }
+    
+    public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let type = try container.decode(Compound.Logical​Type.self, forKey: .type)
+        
+        switch type {
+        case .and:
+            let predicates = try container.decode([Predicate].self, forKey: .predicates)
+            self = .and(predicates)
+        case .or:
+            let predicates = try container.decode([Predicate].self, forKey: .predicates)
+            self = .or(predicates)
+        case .not:
+            let predicate = try container.decode(Predicate.self, forKey: .predicates)
+            self = .not(predicate)
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(type, forKey: .type)
+        
+        switch self {
+        case let .and(predicates):
+            try container.encode(predicates, forKey: .predicates)
+        case let .or(predicates):
+            try container.encode(predicates, forKey: .predicates)
+        case let .not(predicate):
+            try container.encode(predicate, forKey: .predicates)
+        }
     }
 }
 

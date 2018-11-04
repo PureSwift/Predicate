@@ -6,25 +6,31 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
-/// You use predicates to represent logical conditions, used for describing objects in persistent stores and in-memory filtering of objects.
-public enum Predicate {
+/// You use predicates to represent logical conditions,
+/// used for describing objects in persistent stores and in-memory filtering of objects.
+public enum Predicate: Equatable {
     
     case comparison(Comparision)
     case compound(Compound)
     case value(Bool)
 }
 
-// MARK: - Equatable
-
-extension Predicate: Equatable {
+/// Predicate Type
+public enum PredicateType: String, Codable {
     
-    public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
-        
-        switch (lhs, rhs) {
-        case let (.comparison(lhsValue), .comparison(rhsValue)): return lhsValue == rhsValue
-        case let (.compound(lhsValue), .compound(rhsValue)): return lhsValue == rhsValue
-        case let (.value(lhsValue), .value(rhsValue)): return lhsValue == rhsValue
-        default: return false
+    case comparison
+    case compound
+    case value
+}
+
+public extension Predicate {
+    
+    /// Predicate Type
+    var type: PredicateType {
+        switch self {
+        case .comparison: return .comparison
+        case .compound: return .compound
+        case .value: return .value
         }
     }
 }
@@ -36,9 +42,55 @@ extension Predicate: CustomStringConvertible {
     public var description: String {
         
         switch self {
-        case let .comparison(value):    return "\(value)"
-        case let .compound(value):      return "\(value)"
-        case let .value(value):         return "\(value)"
+        case let .comparison(value):    return value.description
+        case let .compound(value):      return value.description
+        case let .value(value):         return value.description
+        }
+    }
+}
+
+// MARK: - Codable
+
+extension Predicate: Codable {
+    
+    internal enum CodingKeys: String, CodingKey {
+        
+        case type
+        case predicate
+    }
+    
+    public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let type = try container.decode(PredicateType.self, forKey: .type)
+        
+        switch type {
+        case .comparison:
+            let predicate = try container.decode(Comparision.self, forKey: .predicate)
+            self = .comparison(predicate)
+        case .compound:
+            let predicate = try container.decode(Compound.self, forKey: .predicate)
+            self = .compound(predicate)
+        case .value:
+            let value = try container.decode(Bool.self, forKey: .predicate)
+            self = .value(value)
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(type, forKey: .type)
+        
+        switch self {
+        case let .comparison(predicate):
+            try container.encode(predicate, forKey: .predicate)
+        case let .compound(predicate):
+            try container.encode(predicate, forKey: .predicate)
+        case let .value(value):
+            try container.encode(value, forKey: .predicate)
         }
     }
 }
@@ -51,7 +103,7 @@ public protocol PredicateEvaluatable {
     func evaluate(with predicate: Predicate) throws -> Bool
 }
 
-extension Sequence where Iterator.Element: PredicateEvaluatable {
+extension Sequence where Element: PredicateEvaluatable {
     
     func evaluate(with predicate: Predicate) throws -> Bool {
         
@@ -63,12 +115,4 @@ extension Sequence where Iterator.Element: PredicateEvaluatable {
         
         return true
     }
-}
-
-// MARK: - Convert
-
-/// Value can be converted to a predicate, typically an expression constant value.
-public protocol PredicateConvertible {
-    
-    func toPredicate() -> Predicate
 }

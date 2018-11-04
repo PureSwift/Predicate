@@ -6,34 +6,13 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
+import Foundation
 import XCTest
 @testable import Predicate
 
-final class PredicateTests: XCTestCase {
-    
-    class Person: NSObject {
-        var id: Int
-        var name: String
-        init(id: Int, name: String) {
-            self.id = id
-            self.name = name
-            super.init()
-        }
-    }
-    
-    class Event: NSObject {
-        var id: Int
-        var name: String
-        var start: Date
-        var speakers: Set<Person>
-        init(id: Int, name: String, start: Date, speakers: Set<Person>) {
-            self.id = id
-            self.name = name
-            self.start = start
-            self.speakers = speakers
-            super.init()
-        }
-    }
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+
+final class NSPredicateTests: XCTestCase {
     
     func testPredicate1() {
         
@@ -108,3 +87,39 @@ final class PredicateTests: XCTestCase {
         XCTAssert((events as NSArray).filtered(using: nsPredicate).count == events.count)
     }
 }
+
+// MARK: - Supporting Types
+
+@objc(Person)
+class Person: NSObject {
+    
+    @objc var id: Int
+    @objc var name: String
+    
+    init(id: Int, name: String) {
+        
+        self.id = id
+        self.name = name
+        super.init()
+    }
+}
+
+@objc(Event)
+class Event: NSObject {
+    
+    @objc var id: Int
+    @objc var name: String
+    @objc var start: Date
+    @objc var speakers: Set<Person>
+    
+    init(id: Int, name: String, start: Date, speakers: Set<Person>) {
+        
+        self.id = id
+        self.name = name
+        self.start = start
+        self.speakers = speakers
+        super.init()
+    }
+}
+
+#endif

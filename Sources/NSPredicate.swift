@@ -8,13 +8,7 @@
 
 import Foundation
 
-public extension NSPredicate {
-    
-    convenience init(_ predicate: Predicate) {
-        
-        fatalError()
-    }
-}
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
 
 public extension Predicate {
     
@@ -53,10 +47,10 @@ public extension Comparision {
     
     func toFoundation() -> NSComparisonPredicate {
         
-        let options = self.options.reduce(NSComparisonPredicate.Options(), { $0.0.union($0.1.toFoundation()) })
+        let options = self.options.reduce(NSComparisonPredicate.Options(), { $0.union($1.toFoundation()) })
         
-        return NSComparisonPredicate(leftExpression: expression.left.toFoundation(),
-                                     rightExpression: expression.right.toFoundation(),
+        return NSComparisonPredicate(leftExpression: left.toFoundation(),
+                                     rightExpression: right.toFoundation(),
                                      modifier: modifier?.toFoundation() ?? .direct,
                                      type: type.toFoundation(),
                                      options: options)
@@ -142,3 +136,5 @@ public extension Value {
         }
     }
 }
+
+#endif
