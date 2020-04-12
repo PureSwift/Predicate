@@ -127,9 +127,14 @@ public extension Value {
         case let .data(value):      return value as NSData
         case let .date(value):      return value as NSDate
         case let .bool(value):      return value as NSNumber
+        case let .int8(value):     return value as NSNumber
         case let .int16(value):     return value as NSNumber
         case let .int32(value):     return value as NSNumber
         case let .int64(value):     return value as NSNumber
+        case let .uint8(value):     return value as NSNumber
+        case let .uint16(value):     return value as NSNumber
+        case let .uint32(value):     return value as NSNumber
+        case let .uint64(value):     return value as NSNumber
         case let .float(value):     return value as NSNumber
         case let .double(value):    return value as NSNumber
         case let .collection(value): return value.map({ $0.toFoundation() }) as NSArray

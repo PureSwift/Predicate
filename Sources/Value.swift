@@ -16,13 +16,20 @@ public enum Value: Equatable {
     case data(Data)
     case date(Date)
     case bool(Bool)
+    case int8(Int8)
     case int16(Int16)
     case int32(Int32)
     case int64(Int64)
+    case uint8(UInt8)
+    case uint16(UInt16)
+    case uint32(UInt32)
+    case uint64(UInt64)
     case float(Float)
     case double(Double)
     case collection([Value])
 }
+
+// MARK: - Supporting Types
 
 /// Predicate Value Type
 public enum ValueType: String, Codable {
@@ -32,9 +39,14 @@ public enum ValueType: String, Codable {
     case data
     case date
     case bool
+    case int8
     case int16
     case int32
     case int64
+    case uint8
+    case uint16
+    case uint32
+    case uint64
     case float
     case double
     case collection
@@ -50,9 +62,14 @@ public extension Value {
         case .data: return .data
         case .date: return .date
         case .bool: return .bool
+        case .int8: return .int8
         case .int16: return .int16
         case .int32: return .int32
         case .int64: return .int64
+        case .uint8: return .uint8
+        case .uint16: return .uint16
+        case .uint32: return .uint32
+        case .uint64: return .uint64
         case .float: return .float
         case .double: return .double
         case .collection: return .collection
@@ -72,12 +89,17 @@ extension Value: CustomStringConvertible {
         case let .data(value):      return value.description
         case let .date(value):      return value.description
         case let .bool(value):      return value.description
+        case let .int8(value):     return value.description
         case let .int16(value):     return value.description
         case let .int32(value):     return value.description
         case let .int64(value):     return value.description
+        case let .uint8(value):     return value.description
+        case let .uint16(value):     return value.description
+        case let .uint32(value):     return value.description
+        case let .uint64(value):     return value.description
         case let .float(value):     return value.description
         case let .double(value):    return value.description
-            
+        
         case let .collection(values):
             
             var text = "{"
@@ -130,6 +152,9 @@ extension Value: Codable {
         case .bool:
             let value = try container.decode(Bool.self, forKey: .value)
             self = .bool(value)
+        case .int8:
+            let value = try container.decode(Int8.self, forKey: .value)
+            self = .int8(value)
         case .int16:
             let value = try container.decode(Int16.self, forKey: .value)
             self = .int16(value)
@@ -139,6 +164,18 @@ extension Value: Codable {
         case .int64:
             let value = try container.decode(Int64.self, forKey: .value)
             self = .int64(value)
+        case .uint8:
+            let value = try container.decode(UInt8.self, forKey: .value)
+            self = .uint8(value)
+        case .uint16:
+            let value = try container.decode(UInt16.self, forKey: .value)
+            self = .uint16(value)
+        case .uint32:
+            let value = try container.decode(UInt32.self, forKey: .value)
+            self = .uint32(value)
+        case .uint64:
+            let value = try container.decode(UInt64.self, forKey: .value)
+            self = .uint64(value)
         case .float:
             let value = try container.decode(Float.self, forKey: .value)
             self = .float(value)
@@ -168,11 +205,21 @@ extension Value: Codable {
             try container.encode(value, forKey: .value)
         case let .bool(value):
             try container.encode(value, forKey: .value)
+        case let .int8(value):
+            try container.encode(value, forKey: .value)
         case let .int16(value):
             try container.encode(value, forKey: .value)
         case let .int32(value):
             try container.encode(value, forKey: .value)
         case let .int64(value):
+            try container.encode(value, forKey: .value)
+        case let .uint8(value):
+            try container.encode(value, forKey: .value)
+        case let .uint16(value):
+            try container.encode(value, forKey: .value)
+        case let .uint32(value):
+            try container.encode(value, forKey: .value)
+        case let .uint64(value):
             try container.encode(value, forKey: .value)
         case let .float(value):
             try container.encode(value, forKey: .value)
