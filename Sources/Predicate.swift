@@ -8,7 +8,7 @@
 
 /// You use predicates to represent logical conditions,
 /// used for describing objects in persistent stores and in-memory filtering of objects.
-public enum Predicate: Equatable {
+public enum Predicate: Equatable, Hashable {
     
     case comparison(Comparision)
     case compound(Compound)
@@ -111,7 +111,6 @@ extension Sequence where Element: PredicateEvaluatable {
             guard try element.evaluate(with: predicate)
                 else { return false }
         }
-        
         return true
     }
 }

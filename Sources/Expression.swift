@@ -7,7 +7,7 @@
 //
 
 /// Used to represent expressions in a predicate.
-public enum Expression: Equatable {
+public enum Expression: Equatable, Hashable {
     
     /// Expression that represents a given constant value.
     case value(Value)
@@ -59,7 +59,6 @@ extension Expression: Codable {
     public init(from decoder: Decoder) throws {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         let type = try container.decode(ExpressionType.self, forKey: .type)
         
         switch type {
@@ -75,7 +74,6 @@ extension Expression: Codable {
     public func encode(to encoder: Encoder) throws {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
         try container.encode(type, forKey: .type)
         
         switch self {
@@ -94,21 +92,18 @@ public extension Expression {
     func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
         
         let comparision = Comparision(left: self, right: rhs, type: type)
-        
         return .comparison(comparision)
     }
     
     func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
         let comparision = Comparision(left: self, right: rhs, type: type, options: options)
-        
         return .comparison(comparision)
     }
     
     func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
         
         let comparision = Comparision(left: self, right: rhs, type: type, modifier: modifier, options: options)
-        
         return .comparison(comparision)
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Constant value used in predicate expressions.
-public enum Value: Equatable {
+public enum Value: Equatable, Hashable {
     
     case null
     case string(String)
