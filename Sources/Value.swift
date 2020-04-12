@@ -15,6 +15,7 @@ public enum Value: Equatable, Hashable {
     case string(String)
     case data(Data)
     case date(Date)
+    case uuid(UUID)
     case bool(Bool)
     case int8(Int8)
     case int16(Int16)
@@ -38,6 +39,7 @@ public enum ValueType: String, Codable {
     case string
     case data
     case date
+    case uuid
     case bool
     case int8
     case int16
@@ -61,6 +63,7 @@ public extension Value {
         case .string: return .string
         case .data: return .data
         case .date: return .date
+        case .uuid: return .uuid
         case .bool: return .bool
         case .int8: return .int8
         case .int16: return .int16
@@ -88,8 +91,9 @@ extension Value: CustomStringConvertible {
         case let .string(value):    return "\"\(value)\""
         case let .data(value):      return value.description
         case let .date(value):      return value.description
+        case let .uuid(value):      return value.uuidString
         case let .bool(value):      return value.description
-        case let .int8(value):     return value.description
+        case let .int8(value):      return value.description
         case let .int16(value):     return value.description
         case let .int32(value):     return value.description
         case let .int64(value):     return value.description
@@ -149,6 +153,9 @@ extension Value: Codable {
         case .date:
             let value = try container.decode(Date.self, forKey: .value)
             self = .date(value)
+        case .uuid:
+            let value = try container.decode(UUID.self, forKey: .value)
+            self = .uuid(value)
         case .bool:
             let value = try container.decode(Bool.self, forKey: .value)
             self = .bool(value)
@@ -202,6 +209,8 @@ extension Value: Codable {
         case let .data(value):
             try container.encode(value, forKey: .value)
         case let .date(value):
+            try container.encode(value, forKey: .value)
+        case let .uuid(value):
             try container.encode(value, forKey: .value)
         case let .bool(value):
             try container.encode(value, forKey: .value)
