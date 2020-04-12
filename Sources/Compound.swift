@@ -7,7 +7,7 @@
 //
 
 /// Predicate type used to represent logical “gate” operations (AND/OR/NOT) and comparison operations.
-public indirect enum Compound: Equatable {
+public indirect enum Compound: Equatable, Hashable {
     
     case and([Predicate])
     case or([Predicate])

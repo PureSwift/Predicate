@@ -27,7 +27,6 @@ public extension Compound {
     func toFoundation() -> NSCompoundPredicate {
         
         let subpredicates = self.subpredicates.map { $0.toFoundation() }
-        
         return NSCompoundPredicate(type: type.toFoundation(), subpredicates: subpredicates)
     }
 }
@@ -48,7 +47,6 @@ public extension Comparision {
     func toFoundation() -> NSComparisonPredicate {
         
         let options = self.options.reduce(NSComparisonPredicate.Options(), { $0.union($1.toFoundation()) })
-        
         return NSComparisonPredicate(leftExpression: left.toFoundation(),
                                      rightExpression: right.toFoundation(),
                                      modifier: modifier?.toFoundation() ?? .direct,
@@ -126,8 +124,9 @@ public extension Value {
         case let .string(value):    return value as NSString
         case let .data(value):      return value as NSData
         case let .date(value):      return value as NSDate
+        case let .uuid(value):      return value as NSUUID
         case let .bool(value):      return value as NSNumber
-        case let .int8(value):     return value as NSNumber
+        case let .int8(value):      return value as NSNumber
         case let .int16(value):     return value as NSNumber
         case let .int32(value):     return value as NSNumber
         case let .int64(value):     return value as NSNumber

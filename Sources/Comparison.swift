@@ -7,7 +7,7 @@
 //
 
 /// Comparision Predicate
-public struct Comparision: Equatable, Codable {
+public struct Comparision: Equatable, Hashable, Codable {
     
     public var left: Expression
     
