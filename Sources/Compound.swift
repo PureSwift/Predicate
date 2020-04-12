@@ -18,7 +18,7 @@ public indirect enum Compound: Equatable {
 
 public extension Compound {
     
-    public var type: Logical​Type {
+    var type: Logical​Type {
         
         switch self {
         case .and:  return .and
@@ -27,7 +27,7 @@ public extension Compound {
         }
     }
     
-    public var subpredicates: [Predicate] {
+    var subpredicates: [Predicate] {
         
         switch self {
         case let .and(subpredicates):   return subpredicates
@@ -42,7 +42,7 @@ public extension Compound {
 public extension Compound {
     
     /// Possible Compund Predicate types.
-    public enum Logical​Type: String, Codable {
+    enum Logical​Type: String, Codable {
         
         /// A logical NOT predicate.
         case not = "NOT"

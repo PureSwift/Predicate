@@ -108,7 +108,6 @@ extension Sequence where Element: PredicateEvaluatable {
     func evaluate(with predicate: Predicate) throws -> Bool {
         
         for element in self {
-            
             guard try element.evaluate(with: predicate)
                 else { return false }
         }

@@ -37,13 +37,13 @@ public struct Comparision: Equatable, Codable {
 
 public extension Comparision {
 
-    public enum Modifier: String, Codable {
+    enum Modifier: String, Codable {
         
         case all        = "ALL"
         case any        = "ANY"
     }
     
-    public enum Option: String, Codable {
+    enum Option: String, Codable {
         
         /// A case-insensitive predicate.
         case caseInsensitive        = "c"
@@ -59,7 +59,7 @@ public extension Comparision {
         case localeSensitive        = "l"
     }
     
-    public enum Operator: String, Codable {
+    enum Operator: String, Codable {
         
         case lessThan               = "<"
         case lessThanOrEqualTo      = "<="
