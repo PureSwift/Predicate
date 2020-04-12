@@ -89,21 +89,21 @@ extension Expression: Codable {
 
 public extension Expression {
     
-    func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
+    func compare(_ type: Comparison.Operator, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: self, right: rhs, type: type)
-        return .comparison(comparision)
+        let comparison = Comparison(left: self, right: rhs, type: type)
+        return .comparison(comparison)
     }
     
-    func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+    func compare(_ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: self, right: rhs, type: type, options: options)
-        return .comparison(comparision)
+        let comparison = Comparison(left: self, right: rhs, type: type, options: options)
+        return .comparison(comparison)
     }
     
-    func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+    func compare(_ modifier: Comparison.Modifier, _ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: self, right: rhs, type: type, modifier: modifier, options: options)
-        return .comparison(comparision)
+        let comparison = Comparison(left: self, right: rhs, type: type, modifier: modifier, options: options)
+        return .comparison(comparison)
     }
 }

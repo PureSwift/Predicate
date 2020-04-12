@@ -42,7 +42,7 @@ public extension Compound.Logical​Type {
     }
 }
 
-public extension Comparision {
+public extension Comparison {
     
     func toFoundation() -> NSComparisonPredicate {
         
@@ -55,7 +55,7 @@ public extension Comparision {
     }
 }
 
-public extension Comparision.Modifier {
+public extension Comparison.Modifier {
     
     func toFoundation() -> NSComparisonPredicate.Modifier {
         
@@ -66,7 +66,7 @@ public extension Comparision.Modifier {
     }
 }
 
-public extension Comparision.Operator {
+public extension Comparison.Operator {
     
     func toFoundation() -> NSComparisonPredicate.Operator {
         
@@ -88,7 +88,7 @@ public extension Comparision.Operator {
     }
 }
 
-public extension Comparision.Option {
+public extension Comparison.Option {
     
     func toFoundation() -> NSComparisonPredicate.Options {
         
