@@ -6,8 +6,8 @@
 //  Copyright © 2017 PureSwift. All rights reserved.
 //
 
-/// Comparision Predicate
-public struct Comparision: Equatable, Hashable, Codable {
+/// Comparison Predicate
+public struct Comparison: Equatable, Hashable, Codable {
     
     public var left: Expression
     
@@ -35,7 +35,7 @@ public struct Comparision: Equatable, Hashable, Codable {
 
 // MARK: - Supporting Types
 
-public extension Comparision {
+public extension Comparison {
 
     enum Modifier: String, Codable {
         
@@ -79,7 +79,7 @@ public extension Comparision {
 
 // MARK: - CustomStringConvertible
 
-extension Comparision: CustomStringConvertible {
+extension Comparison: CustomStringConvertible {
     
     public var description: String {
         
@@ -106,136 +106,136 @@ extension Comparision: CustomStringConvertible {
 
 public func < (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .lessThan)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func <= (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .lessThanOrEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func > (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .greaterThan)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func >= (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .greaterThanOrEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func == (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .equalTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func != (lhs: Expression, rhs: Expression) -> Predicate {
     
-    let comparision = Comparision(left: lhs,
+    let comparison = Comparison(left: lhs,
                                   right: rhs,
                                   type: .notEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 // LHS keypath and RHS predicate value
 
 public func < <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .lessThan)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func <= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .lessThanOrEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func > <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .greaterThan)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func >= <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .greaterThanOrEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func == <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .equalTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
 public func != <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparision = Comparision(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(lhs),
                                   right: .value(rhs.predicateValue),
                                   type: .notEqualTo)
     
-    return .comparison(comparision)
+    return .comparison(comparison)
 }
 
-// Extensions for KeyPath comparisions
+// Extensions for KeyPath comparisons
 public extension String {
     
-    func compare(_ type: Comparision.Operator, _ rhs: Expression) -> Predicate {
+    func compare(_ type: Comparison.Operator, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: .keyPath(self), right: rhs, type: type)
+        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
     
-    func compare(_ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+    func compare(_ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: .keyPath(self), right: rhs, type: type, options: options)
+        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type, options: options)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
     
-    func compare(_ modifier: Comparision.Modifier, _ type: Comparision.Operator, _ options: Set<Comparision.Option>, _ rhs: Expression) -> Predicate {
+    func compare(_ modifier: Comparison.Modifier, _ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparision = Comparision(left: .keyPath(self), right: rhs, type: type, modifier: modifier, options: options)
+        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type, modifier: modifier, options: options)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
     
     func any <Value: PredicateValue> (in collection: [Value]) -> Predicate {
@@ -244,9 +244,9 @@ public extension String {
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparision = Comparision(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .any)
+        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .any)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
     
     func all <Value: PredicateValue> (in collection: [Value]) -> Predicate {
@@ -255,19 +255,19 @@ public extension String {
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparision = Comparision(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .all)
+        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .all)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
     
-    func `in` <Value: PredicateValue> (_ collection: [Value], options: Set<Comparision.Option> = []) -> Predicate {
+    func `in` <Value: PredicateValue> (_ collection: [Value], options: Set<Comparison.Option> = []) -> Predicate {
         
         let values = collection.map { $0.predicateValue }
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparision = Comparision(left: .keyPath(self), right: rightExpression, type: .`in`, options: options)
+        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, options: options)
         
-        return .comparison(comparision)
+        return .comparison(comparison)
     }
 }

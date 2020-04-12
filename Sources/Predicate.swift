@@ -10,7 +10,7 @@
 /// used for describing objects in persistent stores and in-memory filtering of objects.
 public enum Predicate: Equatable, Hashable {
     
-    case comparison(Comparision)
+    case comparison(Comparison)
     case compound(Compound)
     case value(Bool)
 }
@@ -67,7 +67,7 @@ extension Predicate: Codable {
         
         switch type {
         case .comparison:
-            let predicate = try container.decode(Comparision.self, forKey: .predicate)
+            let predicate = try container.decode(Comparison.self, forKey: .predicate)
             self = .comparison(predicate)
         case .compound:
             let predicate = try container.decode(Compound.self, forKey: .predicate)
