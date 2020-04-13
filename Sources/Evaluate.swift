@@ -103,10 +103,13 @@ internal extension Value {
                  locale: Locale? = nil) throws -> Bool {
         
         switch (comparisonOperator, self, other) {
+        // null
         case (.equalTo, .null, .null):
             return true
         case (.notEqualTo, .null, .null):
             return false
+            
+        // string
         case (.equalTo, .string, .null):
             return false
         case (.equalTo, .null, .string):
@@ -135,18 +138,74 @@ internal extension Value {
             return lhs.begins(with: rhs)
         case let (.endsWith, .string(lhs), .string(rhs)):
             return lhs.ends(with: rhs)
+        case let (.in, .string(lhs), .string(rhs)):
+            return rhs.range(of: lhs, options, locale) != nil
         case let (.in, .string(lhs), .collection(rhs)):
-            let modifier = modifier ?? .any
-            switch modifier {
-            case .any:
-                return rhs.contains(.string(lhs))
-            case .all:
-                return rhs.contains(where: { $0 != .string(lhs) }) == false
+            switch modifier ?? .any {
+            case .any: return rhs.contains(.string(lhs))
+            case .all: return rhs.contains(where: { $0 != .string(lhs) }) == false
             }
         case let (.contains, .string(lhs), .string(rhs)):
-            // FIXME: Case sensitive, locale, diacritic
-            return lhs.contains(rhs)
+            return lhs.range(of: rhs, options, locale) != nil
+        case let (.contains, .collection(lhs), .string(rhs)):
+            switch modifier ?? .any {
+            case .any: return lhs.contains(.string(rhs))
+            case .all: return lhs.contains(where: { $0 != .string(rhs) }) == false
+            }
         
+        /// Data
+        case (.equalTo, .data, .null):
+            return false
+        case (.equalTo, .null, .data):
+            return false
+        case (.notEqualTo, .data, .null):
+            return true
+        case (.notEqualTo, .null, .data):
+            return true
+        case let (.equalTo, .data(lhs), .data(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .data(lhs), .data(rhs)):
+            return lhs != rhs
+        case let (.in, .uint8(lhs), .data(rhs)):
+            switch modifier ?? .any {
+            case .any: return rhs.contains(lhs)
+            case .all: return rhs.contains(where: { $0 != lhs }) == false
+            }
+            return rhs.contains(lhs)
+        case let (.contains, .data(lhs), .uint8(rhs)):
+            switch modifier ?? .any {
+            case .any: return lhs.contains(rhs)
+            case .all: return lhs.contains(where: { $0 != rhs }) == false
+            }
+        
+        // Date
+        case (.equalTo, .date, .null):
+            return false
+        case (.equalTo, .null, .date):
+            return false
+        case (.notEqualTo, .date, .null):
+            return true
+        case (.notEqualTo, .null, .date):
+            return true
+        case let (.lessThan, .date(lhs), .date(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .date(lhs), .date(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .date(lhs), .date(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .date(lhs), .date(rhs)):
+            return lhs >= rhs
+        case let (.in, .date(lhs), .date(rhs))
+            switch modifier ?? .any {
+            case .any: return rhs.contains(.string(lhs))
+            case .all: return rhs.contains(where: { $0 != .string(lhs) }) == false
+            }
+            
+        // collections
+        case let (.in, lhs, .collection(rhs)):
+            return rhs.contains(lhs)
+        case let (.contains, .collection(lhs), rhs):
+            return lhs.contains(rhs)
         default:
             throw PredicateError.invalidComparison(self, other, comparisonOperator, modifier, options)
             
@@ -208,5 +267,12 @@ internal extension String {
         let compareOptions = CompareOptions(options.compactMap { CompareOptions($0) })
         let result = compare(other, options: compareOptions, range: nil, locale: locale)
         return valid.contains(result)
+    }
+    
+    func range(of other: String, _ options: Set<Comparison.Option>, _ locale: Locale?) -> Range<String.Index>? {
+        
+        let locale = options.contains(.localeSensitive) ? locale : nil
+        let compareOptions = CompareOptions(options.compactMap { CompareOptions($0) })
+        return range(of: other, options: compareOptions, range: nil, locale: locale)
     }
 }
