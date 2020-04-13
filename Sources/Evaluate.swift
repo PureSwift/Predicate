@@ -466,18 +466,6 @@ internal extension Value {
     }
 }
 
-internal extension NSRegularExpression.Options {
-    
-    init?(_ option: Comparison.Option) {
-        switch option {
-        case .caseInsensitive:
-            self = .caseInsensitive
-        default:
-            return nil
-        }
-    }
-}
-
 internal extension String.CompareOptions {
     
     init?(_ option: Comparison.Option) {
