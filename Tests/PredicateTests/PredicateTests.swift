@@ -14,6 +14,7 @@ final class PredicateTests: XCTestCase {
     func testDescription() {
         
         XCTAssertEqual(Predicate.comparison(.init(left: .keyPath("name"), right: .value(.string("Coleman")))).description, "name = \"Coleman\"")
+        XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description, "name != NULL")
     }
     
     func testPredicate1() {
@@ -36,8 +37,7 @@ final class PredicateTests: XCTestCase {
             || "id".all(in: [Int16]())
         
         XCTAssertEqual(predicate.description, #"(ANY name IN {"coleman", "miller"} AND ANY id IN {1, 2, 3}) OR ALL id IN {}"#, "Invalid description")
-        XCTAssert(try [Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")].evaluate(with: predicate))
-        XCTAssertFalse(try [""].evaluate(with: predicate, log: { print("Encoder: \($0)") }))
+        XCTAssert(try [Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")].filter(with: predicate).count == 2)
     }
     
     func testPredicate3() {
@@ -47,7 +47,7 @@ final class PredicateTests: XCTestCase {
         
         XCTAssertEqual(predicate.description, #"name IN {"coleman", "miller"} AND id IN {1, 2, 3}"#, "Invalid description")
         XCTAssert(try Person(id: 1, name: "coleman").evaluate(with: predicate, log: { print("Encoder: \($0)") }))
-        //XCTAssert(([Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")] as NSArray).filtered(using: nsPredicate).count == 2)
+        XCTAssert(try [Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")].filter(with: predicate).count == 2)
     }
     
     func testPredicate4() {
@@ -71,10 +71,10 @@ final class PredicateTests: XCTestCase {
             && "name".`in`(["Awesome Event"])
             && "id".`in`(identifiers.map { UInt16($0.rawValue) })
             && "start" < now
-            //&& "speakers.name".all(in: ["Alsey Coleman Miller"])
+            && "speakers.name".all(in: ["Alsey Coleman Miller"])
         
         XCTAssert(try events[0].evaluate(with: predicate, log: { print("Encoder: \($0)") }))
-        //XCTAssert((events as NSArray).filtered(using: nsPredicate).count == events.count)
+        XCTAssertEqual(try events.filter(with: predicate), events)
     }
 }
 
@@ -91,7 +91,7 @@ internal extension PredicateTests {
         }
     }
     
-    struct Person: Equatable, Hashable, Codable {
+    struct Person: Equatable, Hashable, Codable, PredicateEvaluatable {
         
         var id: ID
         var name: String
@@ -102,7 +102,7 @@ internal extension PredicateTests {
         }
     }
 
-    struct Event: Equatable, Hashable, Codable {
+    struct Event: Equatable, Hashable, Codable, PredicateEvaluatable {
         
         var id: ID
         var name: String

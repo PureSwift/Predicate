@@ -164,6 +164,8 @@ final class ValueTests: XCTestCase {
     
     func testCollection() {
         
+        let uuid = UUID()
+        
         XCTAssert(try Value.string("Coleman").compare(.collection([.string("test"), .string("Coleman")]), operator: .in))
         XCTAssert(try Value.string("Coleman").compare(.collection([.string("Coleman"), .string("Coleman")]), operator: .in, modifier: .all))
         XCTAssert(try Value.collection([.string("test"), .string("Coleman")]).compare(.string("Coleman"), operator: .contains))
@@ -178,6 +180,11 @@ final class ValueTests: XCTestCase {
         XCTAssertFalse(try Value.uint8(0xFF).compare(.collection([.uint8(0x00), .uint8(0x01)]), operator: .in))
         XCTAssert(try Value.collection([.uint8(0x00), .uint8(0x01)]).compare(.uint8(0x01), operator: .contains))
         XCTAssertFalse(try Value.collection([.uint8(0x00), .uint8(0x01)]).compare(.uint8(0xFF), operator: .contains))
+        
+        XCTAssert(try Value.uuid(uuid).compare(.collection([.uuid(UUID()), .uuid(uuid)]), operator: .in))
+        XCTAssertFalse(try Value.uuid(UUID()).compare(.collection([.uuid(uuid), .uuid(uuid)]), operator: .in))
+        XCTAssert(try Value.collection([.uuid(UUID()), .uuid(uuid)]).compare(.uuid(uuid), operator: .contains))
+        XCTAssertFalse(try Value.collection([.uuid(UUID()), .uuid(UUID())]).compare(.uuid(UUID()), operator: .contains))
     }
     
     func testNumbers() {
