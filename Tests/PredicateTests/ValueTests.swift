@@ -111,7 +111,9 @@ final class ValueTests: XCTestCase {
     func testCollection() {
         
         XCTAssert(try Value.string("Coleman").compare(.collection([.string("test"), .string("Coleman")]), operator: .in))
+        XCTAssert(try Value.string("Coleman").compare(.collection([.string("Coleman"), .string("Coleman")]), operator: .in, modifier: .all))
         XCTAssert(try Value.collection([.string("test"), .string("Coleman")]).compare(.string("Coleman"), operator: .contains))
+        XCTAssert(try Value.collection([.string("Coleman"), .string("Coleman")]).compare(.string("Coleman"), operator: .contains, modifier: .all))
         
         XCTAssert(try Value.uint8(0x01).compare(.collection([.uint8(0x00), .uint8(0x01)]), operator: .in))
         XCTAssertFalse(try Value.uint8(0xFF).compare(.collection([.uint8(0x00), .uint8(0x01)]), operator: .in))
@@ -121,6 +123,8 @@ final class ValueTests: XCTestCase {
     
     func testNumbers() {
         
+        XCTAssert(try Value.uint8(0x01).compare(.bool(true), operator: .equalTo))
+        XCTAssert(try Value.uint8(0x00).compare(.bool(true), operator: .notEqualTo))
         XCTAssert(try Value.uint8(0x01).compare(.int8(0x01), operator: .equalTo))
         XCTAssert(try Value.uint8(0x00).compare(.uint16(0x01), operator: .notEqualTo))
         XCTAssert(try Value.uint16(0x1234).compare(.uint32(0x1200), operator: .notEqualTo))
