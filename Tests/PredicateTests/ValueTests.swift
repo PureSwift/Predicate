@@ -91,6 +91,25 @@ final class ValueTests: XCTestCase {
         XCTAssert(try Value.date(date).compare(.date(date), operator: .equalTo))
         XCTAssert(try Value.date(.distantPast).compare(.date(.distantFuture), operator: .notEqualTo))
         XCTAssert(try Value.date(.distantFuture).compare(.date(date), operator: .notEqualTo))
+        XCTAssert(try Value.date(.distantPast).compare(.date(date), operator: .lessThan))
+        XCTAssert(try Value.date(.distantPast).compare(.date(date), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.date(.distantPast).compare(.date(.distantPast), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.date(.distantFuture).compare(.date(date), operator: .greaterThan))
+        XCTAssert(try Value.date(.distantFuture).compare(.date(date), operator: .greaterThanOrEqualTo))
+        XCTAssert(try Value.date(.distantFuture).compare(.date(.distantPast), operator: .greaterThanOrEqualTo))
+    }
+    
+    func testUUID() {
+        
+        let uuid = UUID()
+        
+        XCTAssert(try Value.uuid(uuid).compare(.uuid(uuid), operator: .equalTo))
+        XCTAssert(try Value.uuid(uuid).compare(.uuid(UUID()), operator: .notEqualTo))
+        XCTAssert(try Value.uuid(UUID()).compare(.uuid(uuid), operator: .notEqualTo))
+    }
+    
+    func testNumbers() {
+        
         
     }
 }
