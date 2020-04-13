@@ -16,10 +16,10 @@ final class NSPredicateTests: XCTestCase {
     
     func testPredicate1() {
         
-        let predicate: Predicate = #keyPath(Person.id) > Int64(0)
-            && #keyPath(Person.id) != Int64(99)
-            && (#keyPath(Person.name)).compare(.beginsWith, .value(.string("C")))
-            && (#keyPath(Person.name)).compare(.contains, [.diacriticInsensitive, .caseInsensitive], .value(.string("COLE")))
+        let predicate: Predicate = #keyPath(PersonObject.id) > Int64(0)
+            && #keyPath(PersonObject.id) != Int64(99)
+            && (#keyPath(PersonObject.name)).compare(.beginsWith, .value(.string("C")))
+            && (#keyPath(PersonObject.name)).compare(.contains, [.diacriticInsensitive, .caseInsensitive], .value(.string("COLE")))
         
         let converted = predicate.toFoundation()
         
@@ -27,16 +27,16 @@ final class NSPredicateTests: XCTestCase {
         print(converted)
         
         XCTAssert(predicate.description == converted.description, "Invalid description")
-        XCTAssert(converted.evaluate(with: Person(id: 1, name: "Coléman")))
+        XCTAssert(converted.evaluate(with: PersonObject(id: 1, name: "Coléman")))
     }
     
     func testPredicate2() {
         
         let identifiers: [Int64] = [1, 2, 3]
         
-        let predicate: Predicate = (#keyPath(Person.name)).any(in: ["coleman", "miller"])
-            && (#keyPath(Person.id)).any(in: identifiers)
-            || (#keyPath(Person.id)).all(in: [Int16]())
+        let predicate: Predicate = (#keyPath(PersonObject.name)).any(in: ["coleman", "miller"])
+            && (#keyPath(PersonObject.id)).any(in: identifiers)
+            || (#keyPath(PersonObject.id)).all(in: [Int16]())
         
         let nsPredicate = predicate.toFoundation()
         
@@ -44,7 +44,7 @@ final class NSPredicateTests: XCTestCase {
         print(nsPredicate)
         
         XCTAssert(predicate.description == nsPredicate.description, "Invalid description")
-        let test = [Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")]
+        let test = [PersonObject(id: 1, name: "coleman"), PersonObject(id: 2, name: "miller")]
         XCTAssert(nsPredicate.evaluate(with: test))
     }
     
@@ -52,7 +52,7 @@ final class NSPredicateTests: XCTestCase {
         
         let identifiers: [Int64] = [1, 2, 3]
         
-        let predicate: Predicate = (#keyPath(Person.name)).`in`(["coleman", "miller"]) && (#keyPath(Person.id)).`in`(identifiers)
+        let predicate: Predicate = (#keyPath(PersonObject.name)).`in`(["coleman", "miller"]) && (#keyPath(PersonObject.id)).`in`(identifiers)
         
         let nsPredicate = predicate.toFoundation()
         
@@ -60,23 +60,23 @@ final class NSPredicateTests: XCTestCase {
         print(nsPredicate)
         
         XCTAssert(predicate.description == nsPredicate.description, "Invalid description")
-        XCTAssert(nsPredicate.evaluate(with: Person(id: 1, name: "coleman")))
-        XCTAssert(([Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")] as NSArray).filtered(using: nsPredicate).count == 2)
+        XCTAssert(nsPredicate.evaluate(with: PersonObject(id: 1, name: "coleman")))
+        XCTAssert(([PersonObject(id: 1, name: "coleman"), PersonObject(id: 2, name: "miller")] as NSArray).filtered(using: nsPredicate).count == 2)
     }
     
     func testPredicate4() {
         
-        let events = [Event(id: 100, name: "Awesome Event", start: Date(timeIntervalSince1970: 0), speakers: [Person(id: 1, name: "Alsey Coleman Miller")])]
+        let events = [EventObject(id: 100, name: "Awesome Event", start: Date(timeIntervalSince1970: 0), speakers: [PersonObject(id: 1, name: "Alsey Coleman Miller")])]
         
         let now = Date()
         
         let identifiers: [Int64] = [100, 200, 300]
         
-        let predicate: Predicate = (#keyPath(Event.name)).compare(.contains, [.caseInsensitive], .value(.string("event")))
-            && (#keyPath(Event.name)).`in`(["Awesome Event"])
-            && (#keyPath(Event.id)).`in`(identifiers)
-            && (#keyPath(Event.start)) < now
-            && (#keyPath(Event.speakers.name)).all(in: ["Alsey Coleman Miller"])
+        let predicate: Predicate = (#keyPath(EventObject.name)).compare(.contains, [.caseInsensitive], .value(.string("event")))
+            && (#keyPath(EventObject.name)).`in`(["Awesome Event"])
+            && (#keyPath(EventObject.id)).`in`(identifiers)
+            && (#keyPath(EventObject.start)) < now
+            && (#keyPath(EventObject.speakers.name)).all(in: ["Alsey Coleman Miller"])
         
         let nsPredicate = predicate.toFoundation()
         
@@ -91,13 +91,12 @@ final class NSPredicateTests: XCTestCase {
 // MARK: - Supporting Types
 
 @objc(Person)
-class Person: NSObject {
+class PersonObject: NSObject {
     
     @objc var id: Int
     @objc var name: String
     
     init(id: Int, name: String) {
-        
         self.id = id
         self.name = name
         super.init()
@@ -105,15 +104,14 @@ class Person: NSObject {
 }
 
 @objc(Event)
-class Event: NSObject {
+class EventObject: NSObject {
     
     @objc var id: Int
     @objc var name: String
     @objc var start: Date
-    @objc var speakers: Set<Person>
+    @objc var speakers: Set<PersonObject>
     
-    init(id: Int, name: String, start: Date, speakers: Set<Person>) {
-        
+    init(id: Int, name: String, start: Date, speakers: Set<PersonObject>) {
         self.id = id
         self.name = name
         self.start = start

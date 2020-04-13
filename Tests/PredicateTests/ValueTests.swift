@@ -91,6 +91,16 @@ final class ValueTests: XCTestCase {
         XCTAssertTrue(try Value.int64(0x01).compare(.null, operator: .notEqualTo))
         XCTAssertFalse(try Value.null.compare(.int64(0x01), operator: .equalTo))
         XCTAssertTrue(try Value.null.compare(.int64(0x01), operator: .notEqualTo))
+        // Float
+        XCTAssertFalse(try Value.float(1.23).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.float(1.23).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.float(1.23), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.float(1.23), operator: .notEqualTo))
+        // Double
+        XCTAssertFalse(try Value.double(1.23).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.double(1.23).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.double(1.23), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.double(1.23), operator: .notEqualTo))
     }
     
     func testString() {
