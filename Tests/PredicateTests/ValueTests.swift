@@ -17,6 +17,38 @@ final class ValueTests: XCTestCase {
         XCTAssertNoThrow(try Value.string("test").compare(.string("test"), operator: .in))
     }
     
+    func testNull() {
+        
+        // Null
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.null, operator: .notEqualTo)))
+        // String
+        XCTAssertNoThrow(XCTAssertFalse(try Value.string("test").compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.string("test").compare(.null, operator: .notEqualTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.string("test"), operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.string("test"), operator: .notEqualTo)))
+        // Data
+        XCTAssertNoThrow(XCTAssertFalse(try Value.data(Data()).compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.data(Data()).compare(.null, operator: .notEqualTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.data(Data()), operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.data(Data()), operator: .notEqualTo)))
+        // Date
+        XCTAssertNoThrow(XCTAssertFalse(try Value.date(Date()).compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.date(Date()).compare(.null, operator: .notEqualTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.date(Date()), operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.date(Date()), operator: .notEqualTo)))
+        // UUID
+        XCTAssertNoThrow(XCTAssertFalse(try Value.uuid(UUID()).compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.uuid(UUID()).compare(.null, operator: .notEqualTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.uuid(UUID()), operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.uuid(UUID()), operator: .notEqualTo)))
+        // Bool
+        XCTAssertNoThrow(XCTAssertFalse(try Value.bool(false).compare(.null, operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.bool(false).compare(.null, operator: .notEqualTo)))
+        XCTAssertNoThrow(XCTAssertFalse(try Value.null.compare(.bool(true), operator: .equalTo)))
+        XCTAssertNoThrow(XCTAssertTrue(try Value.null.compare(.bool(true), operator: .notEqualTo)))
+    }
+    
     func testStringComparison() {
         
         XCTAssertNoThrow(XCTAssert(try Value.string("Coleman").compare(.string("Coleman"), operator: .equalTo)))
