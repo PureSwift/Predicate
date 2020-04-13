@@ -449,9 +449,9 @@ internal extension Value {
                 case .lessThanOrEqualTo:
                     return result == .orderedAscending || result == .orderedSame
                 case .greaterThan:
-                    return result == .orderedAscending
+                    return result == .orderedDescending
                 case .greaterThanOrEqualTo:
-                    return result == .orderedAscending || result == .orderedSame
+                    return result == .orderedDescending || result == .orderedSame
                 case .equalTo:
                     return result == .orderedSame
                 case .notEqualTo:
