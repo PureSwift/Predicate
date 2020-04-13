@@ -66,11 +66,11 @@ final class ValueTests: XCTestCase {
         XCTAssertFalse(try Value.string("Fancy a game of Cluedo™?").compare(.string(#"\bclue(do)?™?\b"#), operator: .matches))
         XCTAssert(try Value.string("Coleman").compare(.string("Cole"), operator: .beginsWith))
         XCTAssertFalse(try Value.string("Coleman").compare(.string("ole"), operator: .beginsWith))
-        //XCTAssert(try Value.string("Coleman").compare(.string("cole"), operator: .beginsWith, options: [.caseInsensitive])))
+        XCTAssert(try Value.string("Coleman").compare(.string("cole"), operator: .beginsWith, options: [.caseInsensitive]))
         XCTAssert(try Value.string("Coleman").compare(.string("man"), operator: .endsWith))
         XCTAssertFalse(try Value.string("Coleman").compare(.string("Cole"), operator: .endsWith))
         XCTAssert(try Value.string("Coleman").compare(.string("man"), operator: .contains))
-        
+        XCTAssert(try Value.string("OLE").compare(.string("Coleman"), operator: .in, options: [.caseInsensitive]))
     }
     
     func testData() {
@@ -86,6 +86,11 @@ final class ValueTests: XCTestCase {
     
     func testDate() {
         
+        let date = Date()
+        
+        XCTAssert(try Value.date(date).compare(.date(date), operator: .equalTo))
+        XCTAssert(try Value.date(.distantPast).compare(.date(.distantFuture), operator: .notEqualTo))
+        XCTAssert(try Value.date(.distantFuture).compare(.date(date), operator: .notEqualTo))
         
     }
 }
