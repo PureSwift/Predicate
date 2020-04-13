@@ -25,6 +25,7 @@ final class PredicateTests: XCTestCase {
         
         XCTAssertEqual(predicate.description, #"((id > 0 AND id != 99) AND name BEGINSWITH "C") AND name CONTAINS[cd] "COLE""#)
         
+        XCTAssert(try Person(id: 1, name: "Coléman").evaluate(with: predicate, log: { print("Encoder: \($0)") }))
     }
 }
 
