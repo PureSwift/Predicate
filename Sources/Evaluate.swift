@@ -131,14 +131,11 @@ internal extension Value {
         case let (.notEqualTo, .string(lhs), .string(rhs)):
             return lhs.compare(rhs, options, locale, .orderedSame) == false
         case let (.matches, .string(lhs), .string(rhs)):
-            let locale = options.contains(.localeSensitive) ? locale : nil
-            var compareOptions = String.CompareOptions(options.compactMap { String.CompareOptions($0) })
-            compareOptions.insert(.regularExpression)
-            return lhs.range(of: rhs, options: compareOptions, range: nil, locale: locale) != nil
+            return lhs.matches(rhs, options, locale)
         case let (.beginsWith, .string(lhs), .string(rhs)):
-            return lhs.begins(with: rhs)
+            return lhs.begins(with: rhs, options, locale)
         case let (.endsWith, .string(lhs), .string(rhs)):
-            return lhs.ends(with: rhs)
+            return lhs.ends(with: rhs, options, locale)
         case let (.in, .string(lhs), .string(rhs)):
             return rhs.range(of: lhs, options, locale) != nil
         case let (.contains, .string(lhs), .string(rhs)):
@@ -466,35 +463,3 @@ internal extension Value {
     }
 }
 
-internal extension String.CompareOptions {
-    
-    init?(_ option: Comparison.Option) {
-        switch option {
-        case .caseInsensitive:
-            self = .caseInsensitive
-        case .diacriticInsensitive:
-            self = .diacriticInsensitive
-        case .normalized,
-             .localeSensitive:
-            return nil
-        }
-    }
-}
-
-internal extension String {
-    
-    func compare(_ other: String, _ options: Set<Comparison.Option>, _ locale: Locale?, _ valid: ComparisonResult...) -> Bool {
-        
-        let locale = options.contains(.localeSensitive) ? locale : nil
-        let compareOptions = CompareOptions(options.compactMap { CompareOptions($0) })
-        let result = compare(other, options: compareOptions, range: nil, locale: locale)
-        return valid.contains(result)
-    }
-    
-    func range(of other: String, _ options: Set<Comparison.Option>, _ locale: Locale?) -> Range<String.Index>? {
-        
-        let locale = options.contains(.localeSensitive) ? locale : nil
-        let compareOptions = CompareOptions(options.compactMap { CompareOptions($0) })
-        return range(of: other, options: compareOptions, range: nil, locale: locale)
-    }
-}
