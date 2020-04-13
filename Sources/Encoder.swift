@@ -27,8 +27,9 @@ internal struct PredicateEncoder {
     public func encode <T: Encodable> (_ value: T) throws -> PredicateContext {
     
         log?("Will encode \(String(reflecting: T.self))")
-        
-        fatalError()
+        let encoder = Encoder(userInfo: userInfo, log: log)
+        try value.encode(to: encoder)
+        return PredicateContext(encoder.values)
     }
 }
 
@@ -105,19 +106,20 @@ internal extension PredicateEncoder {
 
 internal extension PredicateEncoder.Encoder {
     
-    func write(_ value: Value, for keyPath: String) {
+    func write(_ value: Value) {
+        let keyPath = codingPath.path
         values[keyPath] = value
         log?("Did encode \(value.type) value for keyPath \"\(keyPath)\"")
     }
     
-    func writeEncodable <T: Encodable> (_ value: T, for keyPath: String) throws {
+    func writeEncodable <T: Encodable> (_ value: T) throws {
         
         if let data = value as? Data {
-            write(.data(data), for: keyPath)
+            write(.data(data))
         } else if let uuid = value as? UUID {
-            write(.uuid(uuid), for: keyPath)
+            write(.uuid(uuid))
         } else if let date = value as? Date {
-            write(.date(date), for: keyPath)
+            write(.date(date))
         } else {
             // encode using Encodable, container should write directly.
             try value.encode(to: self)
@@ -212,8 +214,7 @@ internal final class PredicateKeyedContainer <K : CodingKey> : KeyedEncodingCont
         
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        let keyPath = encoder.codingPath.path
-        try encoder.writeEncodable(value, for: keyPath)
+        try encoder.writeEncodable(value)
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
@@ -222,17 +223,14 @@ internal final class PredicateKeyedContainer <K : CodingKey> : KeyedEncodingCont
     }
     
     func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
-        
         fatalError()
     }
     
     func superEncoder() -> Encoder {
-        
         fatalError()
     }
     
     func superEncoder(forKey key: K) -> Encoder {
-        
         fatalError()
     }
     
@@ -246,8 +244,7 @@ internal final class PredicateKeyedContainer <K : CodingKey> : KeyedEncodingCont
         
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        let keyPath = encoder.codingPath.path
-        encoder.write(value, for: keyPath)
+        self.encoder.write(value)
     }
 }
 
@@ -266,65 +263,60 @@ internal final class PredicateSingleValueEncodingContainer: SingleValueEncodingC
     /// Whether the data has been written
     private var didWrite = false
     
-    let keyPath: String
-    
     // MARK: - Initialization
     
     init(referencing encoder: PredicateEncoder.Encoder) {
         self.encoder = encoder
         self.codingPath = encoder.codingPath
-        self.keyPath = encoder.codingPath.path
     }
     
     // MARK: - Methods
     
-    func encodeNil() throws {
-        // do nothing
-    }
+    func encodeNil() throws { write(.null) }
     
-    func encode(_ value: Bool) throws { write(encoder.box(value)) }
+    func encode(_ value: Bool) throws { write(value) }
     
-    func encode(_ value: String) throws { write(encoder.box(value)) }
+    func encode(_ value: String) throws { write(value) }
     
-    func encode(_ value: Double) throws { write(encoder.boxDouble(value)) }
+    func encode(_ value: Double) throws { write(value) }
     
-    func encode(_ value: Float) throws { write(encoder.boxFloat(value)) }
+    func encode(_ value: Float) throws { write(value) }
     
-    func encode(_ value: Int) throws { write(encoder.boxNumeric(Int32(value))) }
+    func encode(_ value: Int) throws { write(Int64(value)) }
     
-    func encode(_ value: Int8) throws { write(encoder.box(value)) }
+    func encode(_ value: Int8) throws { write(value) }
     
-    func encode(_ value: Int16) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: Int16) throws { write(value) }
     
-    func encode(_ value: Int32) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: Int32) throws { write(value) }
     
-    func encode(_ value: Int64) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: Int64) throws { write(value) }
     
-    func encode(_ value: UInt) throws { write(encoder.boxNumeric(UInt32(value))) }
+    func encode(_ value: UInt) throws { write(UInt64(value)) }
     
-    func encode(_ value: UInt8) throws { write(encoder.box(value)) }
+    func encode(_ value: UInt8) throws { write(value) }
     
-    func encode(_ value: UInt16) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: UInt16) throws { write(value) }
     
-    func encode(_ value: UInt32) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: UInt32) throws { write(value) }
     
-    func encode(_ value: UInt64) throws { write(encoder.boxNumeric(value)) }
+    func encode(_ value: UInt64) throws { write(value) }
     
     func encode <T: Encodable> (_ value: T) throws {
         precondition(didWrite == false, "Data already written")
-        encoder.writeEncodable(<#T##value: Encodable##Encodable#>, for: <#T##String#>)
+        try encoder.writeEncodable(value)
         didWrite = true
     }
     
     // MARK: - Private Methods
     
-    private func encode<T: PredicateValue>(_ value: T) {
-        encode(value.predicateValue)
+    private func write<T: PredicateValue>(_ value: T) {
+        write(value.predicateValue)
     }
     
-    private func encode(_ value: Value) {
+    private func write(_ value: Value) {
         precondition(didWrite == false, "Data already written")
-        encoder.write(value, for: keyPath)
+        encoder.write(value)
         didWrite = true
     }
 }
@@ -341,83 +333,106 @@ internal final class PredicateUnkeyedEncodingContainer: UnkeyedEncodingContainer
     /// The path of coding keys taken to get to this point in encoding.
     let codingPath: [CodingKey]
     
-    /// A reference to the container we're writing to.
-    let container: PredicateEncoder.Encoder.ItemsContainer
-    
     // MARK: - Initialization
     
-    init(referencing encoder: PredicateEncoder.Encoder,
-         wrapping container: PredicateEncoder.Encoder.ItemsContainer) {
-        
+    init(referencing encoder: PredicateEncoder.Encoder) {
         self.encoder = encoder
         self.codingPath = encoder.codingPath
-        self.container = container
     }
     
     // MARK: - Methods
     
     /// The number of elements encoded into the container.
-    var count: Int {
-        return container.items.count
+    private(set) var count: Int = 0
+    
+    func encodeNil() throws { append(.null) }
+    
+    func encode(_ value: Bool) throws { append(value) }
+    
+    func encode(_ value: String) throws { append(value) }
+    
+    func encode(_ value: Double) throws { append(value) }
+    
+    func encode(_ value: Float) throws { append(value) }
+    
+    func encode(_ value: Int) throws { append(Int64(value)) }
+    
+    func encode(_ value: Int8) throws { append(value) }
+    
+    func encode(_ value: Int16) throws { append(value) }
+    
+    func encode(_ value: Int32) throws { append(value) }
+    
+    func encode(_ value: Int64) throws { append(value) }
+    
+    func encode(_ value: UInt) throws { append(UInt64(value)) }
+    
+    func encode(_ value: UInt8) throws { append(value) }
+    
+    func encode(_ value: UInt16) throws { append(value) }
+    
+    func encode(_ value: UInt32) throws { append(value) }
+    
+    func encode(_ value: UInt64) throws { append(value) }
+    
+    func encode <T: Encodable> (_ value: T) throws {
+        let key = IndexCodingKey(index: count)
+        self.encoder.codingPath.append(key)
+        defer { self.encoder.codingPath.removeLast() }
+        try encoder.writeEncodable(value)
+        count += 1
     }
-    
-    func encodeNil() throws {
-        // do nothing
-    }
-    
-    func encode(_ value: Bool) throws { append(encoder.box(value)) }
-    
-    func encode(_ value: String) throws { append(encoder.box(value)) }
-    
-    func encode(_ value: Double) throws { append(encoder.boxNumeric(value.bitPattern)) }
-    
-    func encode(_ value: Float) throws { append(encoder.boxNumeric(value.bitPattern)) }
-    
-    func encode(_ value: Int) throws { append(encoder.boxNumeric(Int32(value))) }
-    
-    func encode(_ value: Int8) throws { append(encoder.box(value)) }
-    
-    func encode(_ value: Int16) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode(_ value: Int32) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode(_ value: Int64) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode(_ value: UInt) throws { append(encoder.boxNumeric(UInt32(value))) }
-    
-    func encode(_ value: UInt8) throws { append(encoder.box(value)) }
-    
-    func encode(_ value: UInt16) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode(_ value: UInt32) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode(_ value: UInt64) throws { append(encoder.boxNumeric(value)) }
-    
-    func encode <T: Encodable> (_ value: T) throws { append(try encoder.boxEncodable(value)) }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
-        
         fatalError()
     }
     
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        
         fatalError()
     }
     
     func superEncoder() -> Encoder {
-        
         fatalError()
     }
     
     // MARK: - Private Methods
     
-    private func append(_ data: Data) {
-        
-        let index = PredicateTypeCode(rawValue: UInt8(count)) // current index
-        let item = PredicateItem(type: index, value: data)
-        
-        // write
-        self.container.append(item) // already sorted
+    private func append<T: PredicateValue>(_ value: T) {
+        append(value.predicateValue)
+    }
+    
+    private func append(_ value: Value) {
+        let key = IndexCodingKey(index: count)
+        self.encoder.codingPath.append(key)
+        defer { self.encoder.codingPath.removeLast() }
+        encoder.write(value)
+        count += 1
+    }
+}
+
+internal struct IndexCodingKey: CodingKey, Equatable, Hashable {
+    
+    let index: Int
+    
+    init(index: Int) {
+        self.index = index
+    }
+    
+    var stringValue: String {
+        return index.description
+    }
+    
+    init?(stringValue: String) {
+        guard let index = UInt(stringValue)
+            else { return nil }
+        self.init(index: Int(index))
+    }
+    
+    var intValue: Int? {
+        return index
+    }
+    
+    init?(intValue: Int) {
+        self.init(index: intValue)
     }
 }
