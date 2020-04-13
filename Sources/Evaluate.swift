@@ -51,6 +51,7 @@ internal extension Value {
                  locale: Locale? = nil) throws -> Bool {
         
         switch (comparisonOperator, self, other) {
+            
         // null
         case (.equalTo, .null, .null):
             return true

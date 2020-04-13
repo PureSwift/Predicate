@@ -347,6 +347,15 @@ internal final class PredicateUnkeyedEncodingContainer: UnkeyedEncodingContainer
     
     // MARK: - Initialization
     
+    deinit {
+        // write array operators
+        
+        // count
+        self.encoder.codingPath.append(OperatorCodingKey(operatorValue: .count))
+        encoder.write(.uint64(UInt64(count)))
+        self.encoder.codingPath.removeLast()
+    }
+    
     init(referencing encoder: PredicateEncoder.Encoder) {
         self.encoder = encoder
         self.codingPath = encoder.codingPath
@@ -446,5 +455,32 @@ internal struct IndexCodingKey: CodingKey, Equatable, Hashable {
     
     init?(intValue: Int) {
         self.init(index: intValue)
+    }
+}
+
+internal struct OperatorCodingKey: CodingKey, Equatable, Hashable {
+    
+    let operatorValue: PredicateKeyPath.Operator
+    
+    init(operatorValue: PredicateKeyPath.Operator) {
+        self.operatorValue = operatorValue
+    }
+    
+    var stringValue: String {
+        return operatorValue.rawValue
+    }
+    
+    init?(stringValue: String) {
+        guard let operatorValue = PredicateKeyPath.Operator(rawValue: stringValue)
+            else { return nil }
+        self.init(operatorValue: operatorValue)
+    }
+    
+    var intValue: Int? {
+        return nil
+    }
+    
+    init?(intValue: Int) {
+        return nil
     }
 }

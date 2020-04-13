@@ -17,6 +17,16 @@ public struct PredicateKeyPath: Equatable, Hashable {
 
 public extension PredicateKeyPath {
     
+    mutating func append(_ key: Key) {
+        keys.append(key)
+    }
+    
+    func appending(_ key: Key) -> PredicateKeyPath {
+        var newValue = self
+        newValue.append(key)
+        return newValue
+    }
+    
     @discardableResult
     mutating func removeFirst() -> Key {
         return keys.removeFirst()
@@ -61,13 +71,14 @@ extension PredicateKeyPath: CustomStringConvertible {
 extension PredicateKeyPath: RawRepresentable {
     
     public init(rawValue: String) {
-        let components = rawValue.split(separator: ".")
-        let keys: [Key] = components.map { UInt($0).flatMap({ .index($0) }) ?? .property(String($0)) }
+        let keys = rawValue
+            .split(separator: ".")
+            .map { Key(rawValue: String($0)) }
         self.init(keys: keys)
     }
     
     public var rawValue: String {
-        return keys.reduce("", { $0 + "\($0.isEmpty ? "" : ".")" + $1.description })
+        return keys.reduce("", { $0 + "\($0.isEmpty ? "" : ".")" + $1.rawValue })
     }
 }
 
@@ -118,9 +129,7 @@ extension PredicateKeyPath.Key: RawRepresentable {
     public init(rawValue: String) {
         if let index = UInt(rawValue) {
             self = .index(index)
-        } else if rawValue.count >= 2,
-            rawValue.begins(with: PredicateKeyPath.Operator.prefix),
-            let operatorValue = PredicateKeyPath.Operator(rawValue: String(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: 1)))) {
+        } else if let operatorValue = PredicateKeyPath.Operator(rawValue: rawValue) {
             self = .operator(operatorValue)
         } else {
             self = .property(rawValue)
@@ -162,6 +171,6 @@ internal extension PredicateKeyPath.Operator {
 extension PredicateKeyPath.Operator: CustomStringConvertible {
     
     public var description: String {
-        return type(of: self).prefix + rawValue
+        return rawValue
     }
 }
