@@ -28,7 +28,7 @@ internal struct PredicateEncoder {
     
         log?("Will encode \(String(reflecting: T.self))")
         
-        
+        fatalError()
     }
 }
 
@@ -47,7 +47,7 @@ public extension Encodable {
         return try context.evaluate(with: predicate)
     }
 }
-
+/*
 // MARK: - Encoder
 
 internal extension PredicateEncoder {
@@ -86,7 +86,7 @@ internal extension PredicateEncoder {
             log?("Requested container keyed by \(type.sanitizedName) for path \"\(codingPath.path)\"")
             
             let stackContainer = KeyedContainer()
-            self.stack.push(.items(stackContainer))
+            self.stack.push(.keyed(stackContainer))
             
             let keyedContainer = PredicateKeyedContainer<Key>(referencing: self, wrapping: stackContainer)
             
@@ -522,3 +522,4 @@ internal final class PredicateUnkeyedEncodingContainer: UnkeyedEncodingContainer
         self.container.append(item) // already sorted
     }
 }
+*/

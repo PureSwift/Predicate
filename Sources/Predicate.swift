@@ -62,7 +62,6 @@ extension Predicate: Codable {
     public init(from decoder: Decoder) throws {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         let type = try container.decode(PredicateType.self, forKey: .type)
         
         switch type {
@@ -81,7 +80,6 @@ extension Predicate: Codable {
     public func encode(to encoder: Encoder) throws {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
         try container.encode(type, forKey: .type)
         
         switch self {
@@ -92,25 +90,5 @@ extension Predicate: Codable {
         case let .value(value):
             try container.encode(value, forKey: .predicate)
         }
-    }
-}
-
-// MARK: - Evaluate
-
-/// Protocol for types that can be evaluated with a predicate.
-public protocol PredicateEvaluatable {
-    
-    func evaluate(with predicate: Predicate) throws -> Bool
-}
-
-extension Sequence where Element: PredicateEvaluatable {
-    
-    func evaluate(with predicate: Predicate) throws -> Bool {
-        
-        for element in self {
-            guard try element.evaluate(with: predicate)
-                else { return false }
-        }
-        return true
     }
 }

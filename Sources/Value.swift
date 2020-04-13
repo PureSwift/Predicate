@@ -283,6 +283,6 @@ extension Double: PredicateValue {
     public var predicateValue: Value { return .double(self) }
 }
 
-extension Array where Element: PredicateValue {
+extension Sequence where Element: PredicateValue {
     public var predicateValue: Value { return .collection(self.map({ $0.predicateValue })) }
 }
