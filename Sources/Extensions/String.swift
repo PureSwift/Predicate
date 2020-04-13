@@ -49,6 +49,15 @@ internal extension String {
     }
 }
 
+internal extension StringProtocol {
+    
+    func begins(with other: String) -> Bool {
+        guard let range = self.range(of: other, options: [], range: nil, locale: nil)
+            else { return false }
+        return range.lowerBound == self.startIndex
+    }
+}
+
 internal extension String {
     
     init?(_ value: Value) {

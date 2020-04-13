@@ -45,6 +45,9 @@ internal extension PredicateContext {
             if let value = self[keyPath] {
                 return value
             } else {
+                let arrayPath = keyPath.removingLast()
+                let paths = values.filter { $0.key.begins(with: arrayPath) }
+                
                 throw PredicateError.invalidKeyPath(keyPath)
             }
         }

@@ -15,6 +15,38 @@ public struct PredicateKeyPath: Equatable, Hashable {
     }
 }
 
+public extension PredicateKeyPath {
+    
+    @discardableResult
+    mutating func removeFirst() -> Key {
+        return keys.removeFirst()
+    }
+    
+    func removingFirst() -> PredicateKeyPath {
+        var path = self
+        path.removeFirst()
+        return path
+    }
+    
+    @discardableResult
+    mutating func removeLast() -> Key {
+        return keys.removeLast()
+    }
+    
+    func removingLast() -> PredicateKeyPath {
+        var path = self
+        path.removeLast()
+        return path
+    }
+}
+
+internal extension PredicateKeyPath {
+    
+    func begins(with other: PredicateKeyPath) -> Bool {
+        return keys.begins(with: other.keys)
+    }
+}
+
 // MARK: - CustomStringConvertible
 
 extension PredicateKeyPath: CustomStringConvertible {
@@ -66,6 +98,7 @@ public extension PredicateKeyPath {
     enum Key: Equatable, Hashable {
         case property(String)
         case index(UInt)
+        case `operator`(Operator)
     }
 }
 
@@ -74,9 +107,61 @@ public extension PredicateKeyPath {
 extension PredicateKeyPath.Key: CustomStringConvertible {
     
     public var description: String {
-        switch self {
-        case let .property(key): return key
-        case let .index(index): return index.description
+        return rawValue
+    }
+}
+
+// MARK: RawRepresentable
+
+extension PredicateKeyPath.Key: RawRepresentable {
+    
+    public init(rawValue: String) {
+        if let index = UInt(rawValue) {
+            self = .index(index)
+        } else if rawValue.count >= 2,
+            rawValue.begins(with: PredicateKeyPath.Operator.prefix),
+            let operatorValue = PredicateKeyPath.Operator(rawValue: String(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: 1)))) {
+            self = .operator(operatorValue)
+        } else {
+            self = .property(rawValue)
         }
+    }
+    
+    public var rawValue: String {
+        switch self {
+        case let .property(key):
+            return key
+        case let .index(index):
+            return index.description
+        case let .operator(operatorValue):
+            return operatorValue.description
+        }
+    }
+}
+
+// MARK: - Operator
+
+public extension PredicateKeyPath {
+    
+    enum Operator: String {
+        case count      = "@count"
+        case sum        = "@sum"
+        case min        = "@min"
+        case max        = "@max"
+        case average    = "@avg"
+    }
+}
+
+internal extension PredicateKeyPath.Operator {
+    
+    static let prefix = "@"
+}
+
+// MARK: CustomStringConvertible
+
+extension PredicateKeyPath.Operator: CustomStringConvertible {
+    
+    public var description: String {
+        return type(of: self).prefix + rawValue
     }
 }
