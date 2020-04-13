@@ -131,9 +131,10 @@ internal extension Value {
         case let (.notEqualTo, .string(lhs), .string(rhs)):
             return lhs.compare(rhs, options, locale, .orderedSame) == false
         case let (.matches, .string(lhs), .string(rhs)):
-            let expressionOptions = NSRegularExpression.Options(options.compactMap({ NSRegularExpression.Options($0) }))
-            let regularExpression = try NSRegularExpression(pattern: rhs, options: expressionOptions)
-            return regularExpression.numberOfMatches(in: lhs, range: NSRangeFromString(lhs)) > 0
+            let locale = options.contains(.localeSensitive) ? locale : nil
+            var compareOptions = String.CompareOptions(options.compactMap { String.CompareOptions($0) })
+            compareOptions.insert(.regularExpression)
+            return lhs.range(of: rhs, options: compareOptions, range: nil, locale: locale) != nil
         case let (.beginsWith, .string(lhs), .string(rhs)):
             return lhs.begins(with: rhs)
         case let (.endsWith, .string(lhs), .string(rhs)):
