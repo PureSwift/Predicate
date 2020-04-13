@@ -14,6 +14,18 @@ public protocol PredicateEvaluatable {
     func evaluate(with predicate: Predicate) throws -> Bool
 }
 
+extension Sequence where Element: PredicateEvaluatable {
+    
+    func evaluate(with predicate: Predicate) throws -> Bool {
+        
+        for element in self {
+            guard try element.evaluate(with: predicate)
+                else { return false }
+        }
+        return true
+    }
+}
+
 internal extension PredicateEvaluatable {
         
     func evaluate(with predicate: Compound) throws -> Bool {
@@ -438,14 +450,30 @@ internal extension Value {
             
         // collections
         case let (.in, lhs, .collection(rhs)):
-            switch modifier ?? .any {
-            case .any: return rhs.contains(lhs)
-            case .all: return rhs.contains(where: { $0 != lhs }) == false
+            if let number = NSNumber(value: lhs) {
+                let numbers = rhs.compactMap({ NSNumber(value: $0) })
+                switch modifier ?? .any {
+                case .any: return numbers.contains(number)
+                case .all: return numbers.contains(where: { $0 != number }) == false && rhs.count == numbers.count
+                }
+            } else {
+                switch modifier ?? .any {
+                case .any: return rhs.contains(lhs)
+                case .all: return rhs.contains(where: { $0 != lhs }) == false
+                }
             }
         case let (.contains, .collection(lhs), rhs):
-            switch modifier ?? .any {
-            case .any: return lhs.contains(rhs)
-            case .all: return lhs.contains(where: { $0 != rhs }) == false
+            if let number = NSNumber(value: rhs) {
+                let numbers = lhs.compactMap({ NSNumber(value: $0) })
+                switch modifier ?? .any {
+                case .any: return numbers.contains(number)
+                case .all: return numbers.contains(where: { $0 != number }) == false && lhs.count == numbers.count
+                }
+            } else {
+                switch modifier ?? .any {
+                case .any: return lhs.contains(rhs)
+                case .all: return lhs.contains(where: { $0 != rhs }) == false
+                }
             }
             
         // compare numbers
