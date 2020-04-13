@@ -111,6 +111,8 @@ final class ValueTests: XCTestCase {
         XCTAssert(try Value.string("Coleman").compare(.string("man"), operator: .endsWith))
         XCTAssertFalse(try Value.string("Coleman").compare(.string("Cole"), operator: .endsWith))
         XCTAssert(try Value.string("Coleman").compare(.string("man"), operator: .contains))
+        XCTAssert(try Value.string("Coleman").compare(.string("cole"), operator: .contains, options: [.caseInsensitive]))
+        XCTAssert(try Value.string("man").compare(.string("Coleman"), operator: .in))
         XCTAssert(try Value.string("OLE").compare(.string("Coleman"), operator: .in, options: [.caseInsensitive]))
     }
     
@@ -156,6 +158,11 @@ final class ValueTests: XCTestCase {
         XCTAssert(try Value.string("Coleman").compare(.collection([.string("Coleman"), .string("Coleman")]), operator: .in, modifier: .all))
         XCTAssert(try Value.collection([.string("test"), .string("Coleman")]).compare(.string("Coleman"), operator: .contains))
         XCTAssert(try Value.collection([.string("Coleman"), .string("Coleman")]).compare(.string("Coleman"), operator: .contains, modifier: .all))
+        
+        XCTAssert(try Value.string("coleman").compare(.collection([.string("test"), .string("Coleman")]), operator: .in, options: [.caseInsensitive]))
+        XCTAssert(try Value.string("coleman").compare(.collection([.string("Coleman"), .string("Coleman")]), operator: .in, modifier: .all, options: [.caseInsensitive]))
+        XCTAssert(try Value.collection([.string("test"), .string("Coleman")]).compare(.string("coleman"), operator: .contains, options: [.caseInsensitive]))
+        XCTAssert(try Value.collection([.string("Coleman"), .string("Coleman")]).compare(.string("coleman"), operator: .contains, modifier: .all, options: [.caseInsensitive]))
         
         XCTAssert(try Value.uint8(0x01).compare(.collection([.uint8(0x00), .uint8(0x01)]), operator: .in))
         XCTAssertFalse(try Value.uint8(0xFF).compare(.collection([.uint8(0x00), .uint8(0x01)]), operator: .in))

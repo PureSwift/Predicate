@@ -140,6 +140,16 @@ internal extension Value {
             return rhs.range(of: lhs, options, locale) != nil
         case let (.contains, .string(lhs), .string(rhs)):
             return lhs.range(of: rhs, options, locale) != nil
+        case let (.in, .string(lhs), .collection(rhs)):
+            switch modifier ?? .any {
+            case .any: return rhs.contains(where: { String($0).flatMap({ lhs.compare($0, options, locale, .orderedSame) }) ?? false })
+            case .all: return rhs.contains(where: { String($0).flatMap({ lhs.compare($0, options, locale, .orderedAscending, .orderedDescending) }) ?? true }) == false
+            }
+        case let (.contains, .collection(lhs), .string(rhs)):
+            switch modifier ?? .any {
+            case .any: return lhs.contains(where: { String($0).flatMap({ rhs.compare($0, options, locale, .orderedSame) }) ?? false })
+            case .all: return lhs.contains(where: { String($0).flatMap({ rhs.compare($0, options, locale, .orderedAscending, .orderedDescending) }) ?? true }) == false
+            }
         
         /// Data
         case (.equalTo, .data, .null):

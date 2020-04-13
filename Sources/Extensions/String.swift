@@ -49,6 +49,14 @@ internal extension String {
     }
 }
 
+internal extension String {
+    
+    init?(_ value: Value) {
+        guard case let .string(string) = value
+            else { return nil }
+        self = string
+    }
+}
 
 internal extension String.CompareOptions {
     
