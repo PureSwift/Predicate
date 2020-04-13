@@ -14,7 +14,7 @@ final class ValueTests: XCTestCase {
     func testInvalid() {
         
         XCTAssertThrowsError(try Value.string("test").compare(.bool(false), operator: .equalTo))
-        XCTAssertThrowsError(try Value.string("test").compare(.string("test"), operator: .in))
+        XCTAssertNoThrow(try Value.string("test").compare(.string("test"), operator: .in))
     }
     
     func testStringComparison() {

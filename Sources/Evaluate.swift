@@ -140,18 +140,8 @@ internal extension Value {
             return lhs.ends(with: rhs)
         case let (.in, .string(lhs), .string(rhs)):
             return rhs.range(of: lhs, options, locale) != nil
-        case let (.in, .string(lhs), .collection(rhs)):
-            switch modifier ?? .any {
-            case .any: return rhs.contains(.string(lhs))
-            case .all: return rhs.contains(where: { $0 != .string(lhs) }) == false
-            }
         case let (.contains, .string(lhs), .string(rhs)):
             return lhs.range(of: rhs, options, locale) != nil
-        case let (.contains, .collection(lhs), .string(rhs)):
-            switch modifier ?? .any {
-            case .any: return lhs.contains(.string(rhs))
-            case .all: return lhs.contains(where: { $0 != .string(rhs) }) == false
-            }
         
         /// Data
         case (.equalTo, .data, .null):
@@ -171,7 +161,6 @@ internal extension Value {
             case .any: return rhs.contains(lhs)
             case .all: return rhs.contains(where: { $0 != lhs }) == false
             }
-            return rhs.contains(lhs)
         case let (.contains, .data(lhs), .uint8(rhs)):
             switch modifier ?? .any {
             case .any: return lhs.contains(rhs)
@@ -195,17 +184,261 @@ internal extension Value {
             return lhs > rhs
         case let (.greaterThanOrEqualTo, .date(lhs), .date(rhs)):
             return lhs >= rhs
-        case let (.in, .date(lhs), .date(rhs))
-            switch modifier ?? .any {
-            case .any: return rhs.contains(.string(lhs))
-            case .all: return rhs.contains(where: { $0 != .string(lhs) }) == false
-            }
+        case let (.equalTo, .date(lhs), .date(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .date(lhs), .date(rhs)):
+            return lhs != rhs
+            
+        // UUID
+        case (.equalTo, .uuid, .null):
+            return false
+        case (.equalTo, .null, .uuid):
+            return false
+        case (.notEqualTo, .uuid, .null):
+            return true
+        case (.notEqualTo, .null, .uuid):
+            return true
+        case let (.equalTo, .uuid(lhs), .uuid(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .uuid(lhs), .uuid(rhs)):
+            return lhs != rhs
+            
+        // Bool
+        case (.equalTo, .bool, .null):
+            return false
+        case (.equalTo, .null, .bool):
+            return false
+        case (.notEqualTo, .bool, .null):
+            return true
+        case (.notEqualTo, .null, .bool):
+            return true
+        case let (.equalTo, .bool(lhs), .bool(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .bool(lhs), .bool(rhs)):
+            return lhs != rhs
+            
+        // numbers
+        case (.equalTo, .uint8, .null):
+            return false
+        case (.equalTo, .null, .uint8):
+            return false
+        case (.notEqualTo, .uint8, .null):
+            return true
+        case (.notEqualTo, .null, .uint8):
+            return true
+        case let (.lessThan, .uint8(lhs), .uint8(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .uint8(lhs), .uint8(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .uint8(lhs), .uint8(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .uint8(lhs), .uint8(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .uint8(lhs), .uint8(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .uint8(lhs), .uint8(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .uint16, .null):
+            return false
+        case (.equalTo, .null, .uint16):
+            return false
+        case (.notEqualTo, .uint16, .null):
+            return true
+        case (.notEqualTo, .null, .uint16):
+            return true
+        case let (.lessThan, .uint16(lhs), .uint16(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .uint16(lhs), .uint16(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .uint16(lhs), .uint16(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .uint16(lhs), .uint16(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .uint16(lhs), .uint16(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .uint16(lhs), .uint16(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .uint32, .null):
+            return false
+        case (.equalTo, .null, .uint32):
+            return false
+        case (.notEqualTo, .uint32, .null):
+            return true
+        case (.notEqualTo, .null, .uint32):
+            return true
+        case let (.lessThan, .uint32(lhs), .uint32(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .uint32(lhs), .uint32(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .uint32(lhs), .uint32(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .uint32(lhs), .uint32(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .uint32(lhs), .uint32(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .uint32(lhs), .uint32(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .uint64, .null):
+            return false
+        case (.equalTo, .null, .uint64):
+            return false
+        case (.notEqualTo, .uint64, .null):
+            return true
+        case (.notEqualTo, .null, .uint64):
+            return true
+        case let (.lessThan, .uint64(lhs), .uint64(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .uint64(lhs), .uint64(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .uint64(lhs), .uint64(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .uint64(lhs), .uint64(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .uint64(lhs), .uint64(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .uint64(lhs), .uint64(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .int8, .null):
+            return false
+        case (.equalTo, .null, .int8):
+            return false
+        case (.notEqualTo, .int8, .null):
+            return true
+        case (.notEqualTo, .null, .int8):
+            return true
+        case let (.lessThan, .int8(lhs), .int8(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .int8(lhs), .int8(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .int8(lhs), .int8(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .int8(lhs), .int8(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .int8(lhs), .int8(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .int8(lhs), .int8(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .int16, .null):
+            return false
+        case (.equalTo, .null, .int16):
+            return false
+        case (.notEqualTo, .int16, .null):
+            return true
+        case (.notEqualTo, .null, .int16):
+            return true
+        case let (.lessThan, .int16(lhs), .int16(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .int16(lhs), .int16(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .int16(lhs), .int16(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .int16(lhs), .int16(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .int16(lhs), .int16(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .int16(lhs), .int16(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .int32, .null):
+            return false
+        case (.equalTo, .null, .int32):
+            return false
+        case (.notEqualTo, .int32, .null):
+            return true
+        case (.notEqualTo, .null, .int32):
+            return true
+        case let (.lessThan, .int32(lhs), .int32(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .int32(lhs), .int32(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .int32(lhs), .int32(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .int32(lhs), .int32(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .int32(lhs), .int32(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .int32(lhs), .int32(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .int64, .null):
+            return false
+        case (.equalTo, .null, .int64):
+            return false
+        case (.notEqualTo, .int64, .null):
+            return true
+        case (.notEqualTo, .null, .int64):
+            return true
+        case let (.lessThan, .int64(lhs), .int64(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .int64(lhs), .int64(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .int64(lhs), .int64(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .int64(lhs), .int64(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .int64(lhs), .int64(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .int64(lhs), .int64(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .float, .null):
+            return false
+        case (.equalTo, .null, .float):
+            return false
+        case (.notEqualTo, .float, .null):
+            return true
+        case (.notEqualTo, .null, .float):
+            return true
+        case let (.lessThan, .float(lhs), .float(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .float(lhs), .float(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .float(lhs), .float(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .float(lhs), .float(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .float(lhs), .float(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .float(lhs), .float(rhs)):
+            return lhs != rhs
+            
+        case (.equalTo, .double, .null):
+            return false
+        case (.equalTo, .null, .double):
+            return false
+        case (.notEqualTo, .double, .null):
+            return true
+        case (.notEqualTo, .null, .double):
+            return true
+        case let (.lessThan, .double(lhs), .double(rhs)):
+            return lhs < rhs
+        case let (.lessThanOrEqualTo, .double(lhs), .double(rhs)):
+            return lhs <= rhs
+        case let (.greaterThan, .double(lhs), .double(rhs)):
+            return lhs > rhs
+        case let (.greaterThanOrEqualTo, .double(lhs), .double(rhs)):
+            return lhs >= rhs
+        case let (.equalTo, .double(lhs), .double(rhs)):
+            return lhs == rhs
+        case let (.notEqualTo, .double(lhs), .double(rhs)):
+            return lhs != rhs
             
         // collections
         case let (.in, lhs, .collection(rhs)):
-            return rhs.contains(lhs)
+            switch modifier ?? .any {
+            case .any: return rhs.contains(lhs)
+            case .all: return rhs.contains(where: { $0 != lhs }) == false
+            }
         case let (.contains, .collection(lhs), rhs):
-            return lhs.contains(rhs)
+            switch modifier ?? .any {
+            case .any: return lhs.contains(rhs)
+            case .all: return lhs.contains(where: { $0 != rhs }) == false
+            }
         default:
             throw PredicateError.invalidComparison(self, other, comparisonOperator, modifier, options)
             
