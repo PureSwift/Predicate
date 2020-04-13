@@ -18,6 +18,7 @@ final class ValueTests: XCTestCase {
         XCTAssertThrowsError(try Value.bool(true).compare(.string("test"), operator: .in))
         XCTAssertThrowsError(try Value.uint8(0x01).compare(.data(Data([0x01])), operator: .contains))
         XCTAssertThrowsError(try Value.data(Data([0x01])).compare(.uint8(0x01), operator: .in))
+        XCTAssertThrowsError(try Value.uint8(0x01).compare(.bool(true), operator: .contains))
     }
     
     func testNull() {
@@ -50,6 +51,46 @@ final class ValueTests: XCTestCase {
         XCTAssertTrue(try Value.bool(false).compare(.null, operator: .notEqualTo))
         XCTAssertFalse(try Value.null.compare(.bool(true), operator: .equalTo))
         XCTAssertTrue(try Value.null.compare(.bool(true), operator: .notEqualTo))
+        // UInt8
+        XCTAssertFalse(try Value.uint8(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.uint8(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.uint8(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.uint8(0x01), operator: .notEqualTo))
+        // UInt16
+        XCTAssertFalse(try Value.uint16(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.uint16(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.uint16(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.uint16(0x01), operator: .notEqualTo))
+        // UInt32
+        XCTAssertFalse(try Value.uint32(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.uint32(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.uint32(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.uint32(0x01), operator: .notEqualTo))
+        // UInt64
+        XCTAssertFalse(try Value.uint64(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.uint64(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.uint64(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.uint64(0x01), operator: .notEqualTo))
+        // Int8
+        XCTAssertFalse(try Value.int8(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.int8(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.int8(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.int8(0x01), operator: .notEqualTo))
+        // Int16
+        XCTAssertFalse(try Value.int16(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.int16(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.int16(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.int16(0x01), operator: .notEqualTo))
+        // Int32
+        XCTAssertFalse(try Value.int32(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.int32(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.int32(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.int32(0x01), operator: .notEqualTo))
+        // Int64
+        XCTAssertFalse(try Value.int64(0x01).compare(.null, operator: .equalTo))
+        XCTAssertTrue(try Value.int64(0x01).compare(.null, operator: .notEqualTo))
+        XCTAssertFalse(try Value.null.compare(.int64(0x01), operator: .equalTo))
+        XCTAssertTrue(try Value.null.compare(.int64(0x01), operator: .notEqualTo))
     }
     
     func testString() {
@@ -124,6 +165,8 @@ final class ValueTests: XCTestCase {
     
     func testNumbers() {
         
+        //XCTAssert(try Value.float(1.2).compare(.double(1.20), operator: .equalTo))
+        XCTAssert(try Value.float(0.1).compare(.double(1.123), operator: .notEqualTo))
         XCTAssert(try Value.uint8(0x01).compare(.bool(true), operator: .equalTo))
         XCTAssert(try Value.uint8(0x00).compare(.bool(true), operator: .notEqualTo))
         XCTAssert(try Value.bool(true).compare(.uint8(0x01), operator: .equalTo))
@@ -224,5 +267,25 @@ final class ValueTests: XCTestCase {
         XCTAssert(try Value.int64(0xFF).compare(.int64(0x01), operator: .greaterThan))
         XCTAssert(try Value.int64(0xFF).compare(.int64(0x01), operator: .greaterThanOrEqualTo))
         XCTAssert(try Value.int64(0x11).compare(.int64(0x01), operator: .greaterThanOrEqualTo))
+        
+        XCTAssert(try Value.float(1.23).compare(.float(1.23), operator: .equalTo))
+        XCTAssert(try Value.float(1.23).compare(.float(0.12), operator: .notEqualTo))
+        XCTAssert(try Value.float(0.12).compare(.float(1.23), operator: .notEqualTo))
+        XCTAssert(try Value.float(0.12).compare(.float(1.23), operator: .lessThan))
+        XCTAssert(try Value.float(0.12).compare(.float(1.23), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.float(0.12).compare(.float(0.12), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.float(1.23).compare(.float(0.12), operator: .greaterThan))
+        XCTAssert(try Value.float(1.23).compare(.float(0.12), operator: .greaterThanOrEqualTo))
+        XCTAssert(try Value.float(1.23).compare(.float(1.23), operator: .greaterThanOrEqualTo))
+        
+        XCTAssert(try Value.double(1.23).compare(.double(1.23), operator: .equalTo))
+        XCTAssert(try Value.double(1.23).compare(.double(0.12), operator: .notEqualTo))
+        XCTAssert(try Value.double(0.12).compare(.double(1.23), operator: .notEqualTo))
+        XCTAssert(try Value.double(0.12).compare(.double(1.23), operator: .lessThan))
+        XCTAssert(try Value.double(0.12).compare(.double(1.23), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.double(0.12).compare(.double(0.12), operator: .lessThanOrEqualTo))
+        XCTAssert(try Value.double(1.23).compare(.double(0.12), operator: .greaterThan))
+        XCTAssert(try Value.double(1.23).compare(.double(0.12), operator: .greaterThanOrEqualTo))
+        XCTAssert(try Value.double(1.23).compare(.double(1.23), operator: .greaterThanOrEqualTo))
     }
 }
