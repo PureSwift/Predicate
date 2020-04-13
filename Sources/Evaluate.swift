@@ -437,28 +437,31 @@ internal extension Value {
             case .any: return lhs.contains(rhs)
             case .all: return lhs.contains(where: { $0 != rhs }) == false
             }
-        default:
-            throw PredicateError.invalidComparison(self, other, comparisonOperator, modifier, options)
             
-            /*
-        case let (.string(lhs), .string(rhs)):
-            switch comparisonOperator {
-            case .lessThan:
-                return lhs.compare
-            case .lessThanOrEqualTo      = "<="
-            case .greaterThan            = ">"
-            case .greaterThanOrEqualTo   = ">="
-            case .equalTo                = "="
-            case .notEqualTo             = "!="
-            case .matches                = "MATCHES"
-            case .like                   = "LIKE"
-            case .beginsWith             = "BEGINSWITH"
-            case .endsWith               = "ENDSWITH"
-            case .in                     = "IN"
-            case .contains               = "CONTAINS"
-            case .between                = "BETWEEN"
+        // compare numbers
+        default:
+            if let lhs = NSNumber(value: self),
+                let rhs = NSNumber(value: other) {
+                let result = lhs.compare(rhs)
+                switch comparisonOperator {
+                case .lessThan:
+                    return result == .orderedAscending
+                case .lessThanOrEqualTo:
+                    return result == .orderedAscending || result == .orderedSame
+                case .greaterThan:
+                    return result == .orderedAscending
+                case .greaterThanOrEqualTo:
+                    return result == .orderedAscending || result == .orderedSame
+                case .equalTo:
+                    return result == .orderedSame
+                case .notEqualTo:
+                    return result != .orderedSame
+                default:
+                    throw PredicateError.invalidComparison(self, other, comparisonOperator, modifier, options)
+                }
+            } else {
+                throw PredicateError.invalidComparison(self, other, comparisonOperator, modifier, options)
             }
-        */
         }
     }
 }
