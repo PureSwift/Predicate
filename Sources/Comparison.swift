@@ -61,18 +61,50 @@ public extension Comparison {
     
     enum Operator: String, Codable {
         
+        /// A less-than predicate.
         case lessThan               = "<"
+        
+        /// A less-than-or-equal-to predicate.
         case lessThanOrEqualTo      = "<="
+        
+        /// A greater-than predicate.
         case greaterThan            = ">"
+        
+        /// A greater-than-or-equal-to predicate.
         case greaterThanOrEqualTo   = ">="
+        
+        /// An equal-to predicate.
         case equalTo                = "="
+        
+        /// A not-equal-to predicate.
         case notEqualTo             = "!="
+        
+        /// A full regular expression matching predicate.
         case matches                = "MATCHES"
+        
+        /// A simple subset of the MATCHES predicate, similar in behavior to SQL LIKE.
         case like                   = "LIKE"
+        
+        /// A begins-with predicate.
         case beginsWith             = "BEGINSWITH"
+        
+        /// An ends-with predicate.
         case endsWith               = "ENDSWITH"
+        
+        /// A predicate to determine if the left hand side is in the right hand side.
+        ///
+        /// - Note: For strings, returns true if the left hand side is a substring of the right hand side .
+        /// For collections, returns true if the left hand side is in the right hand side .
         case `in`                   = "IN"
+        
+        /// A predicate to determine if the left hand side contains the right hand side.
+        ///
+        /// Returns` true if [lhs contains rhs];` the left hand side must be an `Expression` that evaluates to a collection or string.
         case contains               = "CONTAINS"
+        
+        /// A predicate to determine if the left hand side lies at or between bounds specified by the right hand side.
+        ///
+        /// - Note: Returns `true if [lhs between rhs];` the right hand side must be an array in which the first element sets the lower bound and the second element the upper, inclusive. Comparison is performed using compare(_:) or the class-appropriate equivalent.
         case between                = "BETWEEN"
     }
 }
