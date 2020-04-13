@@ -116,7 +116,7 @@ public extension Expression {
     func toFoundation() -> NSExpression {
         
         switch self {
-        case let .keyPath(keyPath): return NSExpression(forKeyPath: keyPath)
+        case let .keyPath(keyPath): return NSExpression(forKeyPath: keyPath.rawValue)
         case let .value(value): return NSExpression(forConstantValue: value.toFoundation())
         }
     }

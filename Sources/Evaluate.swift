@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - PredicateEvaluatable
 
 /// Protocol for types that can be evaluated with a predicate.
 public protocol PredicateEvaluatable {
@@ -16,13 +17,8 @@ public protocol PredicateEvaluatable {
 
 extension Sequence where Element: PredicateEvaluatable {
     
-    func evaluate(with predicate: Predicate) throws -> Bool {
-        
-        for element in self {
-            guard try element.evaluate(with: predicate)
-                else { return false }
-        }
-        return true
+    func filter(with predicate: Predicate) throws -> [Element] {
+        return try filter { try $0.evaluate(with: predicate) }
     }
 }
 
@@ -44,67 +40,7 @@ internal extension PredicateEvaluatable {
     }
 }
 
-/// Context for evaluating predicates.
-public struct PredicateContext: Equatable, Hashable {
-    
-    public var locale: Locale?
-    
-    internal var values: [String: Value]
-    
-    public init(_ values: [String: Value], locale: Locale? = nil) {
-        self.values = values
-        self.locale = locale
-    }
-    
-    public subscript(keyPath: String) -> Value? {
-        return values[keyPath]
-    }
-}
-
-extension PredicateContext: ExpressibleByDictionaryLiteral {
-    
-    public init(dictionaryLiteral elements: (String, Value)...) {
-        self.init([String: Value](uniqueKeysWithValues: elements))
-    }
-}
-
-internal extension PredicateContext {
-    
-    func value(for expression: Expression) throws -> Value {
-        switch expression {
-        case let .value(value):
-            return value
-        case let .keyPath(keyPath):
-            guard let value = self[keyPath]
-                else { throw PredicateError.invalidKeyPath(keyPath) }
-            return value
-        }
-    }
-}
-
-// MARK: - PredicateEvaluatable
-
-extension PredicateContext: PredicateEvaluatable {
-    
-    public func evaluate(with predicate: Predicate) throws -> Bool {
-        
-        switch predicate {
-        case let .value(value):
-            return value
-        case let .comparison(comparison):
-            return try evaluate(with: comparison)
-        case let .compound(compound):
-            return try evaluate(with: compound)
-        }
-    }
-    
-    internal func evaluate(with predicate: Comparison) throws -> Bool {
-        
-        let lhs = try value(for: predicate.left)
-        let rhs = try value(for: predicate.right)
-        return try lhs.compare(rhs, operator: predicate.type, modifier: predicate.modifier, options: predicate.options)
-    }
-}
+// MARK: - Compare
 
 internal extension Value {
     

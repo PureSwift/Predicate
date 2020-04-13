@@ -29,13 +29,13 @@ internal struct PredicateEncoder {
         log?("Will encode \(String(reflecting: T.self))")
         let encoder = Encoder(userInfo: userInfo, log: log)
         try value.encode(to: encoder)
-        return PredicateContext(encoder.values)
+        return PredicateContext(values: encoder.values)
     }
 }
 
 // MARK: - Codable
 
-public extension Encodable {
+public extension Encodable where Self: PredicateEvaluatable {
     
     func evaluate(with predicate: Predicate) throws -> Bool {
         return try evaluate(with: predicate, log: nil)
@@ -66,7 +66,7 @@ internal extension PredicateEncoder {
         /// Logger
         let log: ((String) -> ())?
                 
-        private(set) var values: [String: Value]
+        private(set) var values: [PredicateKeyPath: Value]
         
         // MARK: - Initialization
         
@@ -106,8 +106,20 @@ internal extension PredicateEncoder {
 
 internal extension PredicateEncoder.Encoder {
     
+    var keyPath: PredicateKeyPath {
+        let keys: [PredicateKeyPath.Key] = codingPath.map { (key) in
+            if let indexKey = key as? IndexCodingKey {
+                return .index(UInt(indexKey.index))
+            } else {
+                return .property(key.stringValue)
+            }
+        }
+        return PredicateContext.KeyPath(keys: keys)
+    }
+    
     func write(_ value: Value) {
-        let keyPath = codingPath.path
+        let keyPath = self.keyPath
+        assert(keyPath.description == codingPath.path)
         values[keyPath] = value
         log?("Did encode \(value.type) value for keyPath \"\(keyPath)\"")
     }

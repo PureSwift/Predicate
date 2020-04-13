@@ -194,7 +194,7 @@ public func != (lhs: Expression, rhs: Expression) -> Predicate {
 
 public func < <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .lessThan)
     
@@ -203,7 +203,7 @@ public func < <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 
 public func <= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .lessThanOrEqualTo)
     
@@ -212,7 +212,7 @@ public func <= <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 
 public func > <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .greaterThan)
     
@@ -221,7 +221,7 @@ public func > <T: PredicateValue>(lhs: String, rhs: T) -> Predicate {
 
 public func >= <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .greaterThanOrEqualTo)
     
@@ -230,7 +230,7 @@ public func >= <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
 
 public func == <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .equalTo)
     
@@ -239,7 +239,7 @@ public func == <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
 
 public func != <T: PredicateValue> (lhs: String, rhs: T) -> Predicate {
     
-    let comparison = Comparison(left: .keyPath(lhs),
+    let comparison = Comparison(left: .keyPath(.init(rawValue: lhs)),
                                   right: .value(rhs.predicateValue),
                                   type: .notEqualTo)
     
@@ -251,21 +251,21 @@ public extension String {
     
     func compare(_ type: Comparison.Operator, _ rhs: Expression) -> Predicate {
         
-        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rhs, type: type)
         
         return .comparison(comparison)
     }
     
     func compare(_ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type, options: options)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rhs, type: type, options: options)
         
         return .comparison(comparison)
     }
     
     func compare(_ modifier: Comparison.Modifier, _ type: Comparison.Operator, _ options: Set<Comparison.Option>, _ rhs: Expression) -> Predicate {
         
-        let comparison = Comparison(left: .keyPath(self), right: rhs, type: type, modifier: modifier, options: options)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rhs, type: type, modifier: modifier, options: options)
         
         return .comparison(comparison)
     }
@@ -276,7 +276,7 @@ public extension String {
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .any)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rightExpression, type: .`in`, modifier: .any)
         
         return .comparison(comparison)
     }
@@ -287,7 +287,7 @@ public extension String {
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, modifier: .all)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rightExpression, type: .`in`, modifier: .all)
         
         return .comparison(comparison)
     }
@@ -298,7 +298,7 @@ public extension String {
         
         let rightExpression = Expression.value(.collection(values))
         
-        let comparison = Comparison(left: .keyPath(self), right: rightExpression, type: .`in`, options: options)
+        let comparison = Comparison(left: .keyPath(.init(rawValue: self)), right: rightExpression, type: .`in`, options: options)
         
         return .comparison(comparison)
     }
