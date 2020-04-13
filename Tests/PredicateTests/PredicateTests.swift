@@ -15,6 +15,7 @@ final class PredicateTests: XCTestCase {
         
         XCTAssertEqual(Predicate.comparison(.init(left: .keyPath("name"), right: .value(.string("Coleman")))).description, "name = \"Coleman\"")
         XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description, "name != NULL")
+        XCTAssertEqual(Predicate.compound(.not(.keyPath("name") == .value(.null))) .description, "NOT name = NULL")
     }
     
     func testPredicate1() {
@@ -48,6 +49,7 @@ final class PredicateTests: XCTestCase {
         XCTAssertEqual(predicate.description, #"name IN {"coleman", "miller"} AND id IN {1, 2, 3}"#, "Invalid description")
         XCTAssert(try Person(id: 1, name: "coleman").evaluate(with: predicate, log: { print("Encoder: \($0)") }))
         XCTAssert(try [Person(id: 1, name: "coleman"), Person(id: 2, name: "miller")].filter(with: predicate).count == 2)
+        XCTAssert(try [Person(id: 1, name: "test1"), Person(id: 2, name: "test2")].filter(with: predicate).isEmpty)
     }
     
     func testPredicate4() {
