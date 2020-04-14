@@ -27,6 +27,16 @@ public extension PredicateKeyPath {
         return newValue
     }
     
+    mutating func append<S>(contentsOf elements: S) where S: Sequence, S.Element == Key {
+        keys.append(contentsOf: elements)
+    }
+    
+    func appending<S>(contentsOf elements: S) -> PredicateKeyPath where S: Sequence, S.Element == Key {
+        var newValue = self
+        newValue.append(contentsOf: elements)
+        return newValue
+    }
+    
     @discardableResult
     mutating func removeFirst() -> Key {
         return keys.removeFirst()
@@ -143,7 +153,7 @@ extension PredicateKeyPath.Key: RawRepresentable {
         case let .index(index):
             return index.description
         case let .operator(operatorValue):
-            return operatorValue.description
+            return operatorValue.rawValue
         }
     }
 }

@@ -28,13 +28,6 @@ public struct PredicateContext: Equatable, Hashable {
     }
 }
 
-extension PredicateContext: ExpressibleByDictionaryLiteral {
-    
-    public init(dictionaryLiteral elements: (PredicateKeyPath, Value)...) {
-        self.init(values: [PredicateKeyPath: Value](uniqueKeysWithValues: elements))
-    }
-}
-
 internal extension PredicateContext {
     
     func value(for expression: Expression) throws -> Value {
@@ -46,20 +39,7 @@ internal extension PredicateContext {
                 return value
             } else {
                 // try to find collection
-                var arrayPath = keyPath.removingLast()
-                let countPath = arrayPath.appending(.operator(.count))
-                // existance of array is determined by encoded @count operator
-                if let countValue = self[countPath],
-                    let count = NSNumber(value: countValue)?.uintValue {
-                    guard count > 0 else {
-                        return .collection([])
-                    }
-                    let values = (0 ..< count)
-                        .map { arrayPath.appending(.index($0)) }
-                        .compactMap { self[keyPath] }
-                    guard values.count == Int(count) else {
-                        throw PredicateError.invalidKeyPath(keyPath)
-                    }
+                if let values = collection(for: keyPath) {
                     return .collection(values)
                 } else {
                     throw PredicateError.invalidKeyPath(keyPath)
@@ -68,6 +48,43 @@ internal extension PredicateContext {
         }
     }
 }
+
+private extension PredicateContext {
+    
+    func collection(for keyPath: PredicateKeyPath) -> [Value]? {
+        var remainderKeys = [PredicateKeyPath.Key]()
+        var keyPath = keyPath
+        repeat {
+            // try again with smaller keyPath
+            defer {
+                let lastKey = keyPath.removeLast()
+                remainderKeys.append(lastKey)
+            }
+            let countPath = keyPath.appending(.operator(.count))
+            guard let countValue = self[countPath],
+                let count = NSNumber(value: countValue)?.uintValue
+                else { continue }
+            let values = (0 ..< count)
+                .map { keyPath.appending(.index($0)).appending(contentsOf: remainderKeys) }
+                .compactMap { self[$0] }
+            guard values.count == Int(count)
+                else { return nil }
+            return values
+        } while keyPath.keys.isEmpty == false
+        return nil
+    }
+}
+
+// MARK: - ExpressibleByDictionaryLiteral
+
+extension PredicateContext: ExpressibleByDictionaryLiteral {
+    
+    public init(dictionaryLiteral elements: (PredicateKeyPath, Value)...) {
+        self.init(values: [PredicateKeyPath: Value](uniqueKeysWithValues: elements))
+    }
+}
+
+// MARK: - PredicateEvaluatable
 
 extension PredicateContext: PredicateEvaluatable {
     

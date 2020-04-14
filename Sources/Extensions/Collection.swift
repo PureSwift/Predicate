@@ -13,3 +13,13 @@ internal extension Array where Element: Equatable {
         return prefix(other.count) == other[0 ..< other.count]
     }
 }
+
+internal extension Collection where Element: Equatable {
+    
+    func contains(_ other: Self) -> Bool {
+        for element in other {
+            guard contains(element) else { return false }
+        }
+        return true
+    }
+}
