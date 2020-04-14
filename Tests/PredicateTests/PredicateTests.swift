@@ -11,6 +11,16 @@ import XCTest
 
 final class PredicateTests: XCTestCase {
     
+    static let allTests = [
+        ("testDescription", testDescription),
+        ("testPredicate1", testPredicate1),
+        ("testPredicate2", testPredicate2),
+        ("testPredicate3", testPredicate3),
+        ("testPredicate4", testPredicate4),
+        ("testPredicate5", testPredicate5),
+        ("testPredicate6", testPredicate6),
+    ]
+    
     func testDescription() {
         
         XCTAssertEqual(Predicate.comparison(.init(left: .keyPath("name"), right: .value(.string("Coleman")))).description, "name = \"Coleman\"")
@@ -120,22 +130,22 @@ final class PredicateTests: XCTestCase {
     func testPredicate6() {
         
         let events = [
-            EventObject(
+            Event(
                 id: 100,
                 name: "Awesome Event",
                 start: Date(timeIntervalSince1970: 0),
                 speakers: [
-                    PersonObject(
+                    Person(
                         id: 1,
                         name: "Alsey Coleman Miller"
                     )
             ]),
-            EventObject(
+            Event(
                 id: 200,
                 name: "Second Event",
                 start: Date(timeIntervalSince1970: 60 * 60 * 2),
                 speakers: [
-                    PersonObject(
+                    Person(
                         id: 2,
                         name: "John Apple"
                     )

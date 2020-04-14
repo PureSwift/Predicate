@@ -11,6 +11,16 @@ import XCTest
 
 final class ValueTests: XCTestCase {
     
+    static let allTests = [
+        ("testInvalid", testInvalid),
+        ("testNull", testNull),
+        ("testString", testString),
+        ("testData", testData),
+        ("testDate", testDate),
+        ("testCollection", testCollection),
+        ("testNumbers", testNumbers),
+    ]
+    
     func testInvalid() {
         
         XCTAssertThrowsError(try Value.string("test").compare(.bool(false), operator: .equalTo))
