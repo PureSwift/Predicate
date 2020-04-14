@@ -51,9 +51,7 @@ final class NSPredicateTests: XCTestCase {
     func testPredicate3() {
         
         let identifiers: [Int64] = [1, 2, 3]
-        
         let predicate: Predicate = (#keyPath(PersonObject.name)).`in`(["coleman", "miller"]) && (#keyPath(PersonObject.id)).`in`(identifiers)
-        
         let nsPredicate = predicate.toFoundation()
         
         print(predicate)
@@ -85,6 +83,48 @@ final class NSPredicateTests: XCTestCase {
         
         XCTAssert(nsPredicate.evaluate(with: events[0]))
         XCTAssert((events as NSArray).filtered(using: nsPredicate).count == events.count)
+    }
+    
+    func testPredicate5() {
+        
+        let events = [
+            EventObject(
+                id: 100,
+                name: "Awesome Event",
+                start: Date(timeIntervalSince1970: 0),
+                speakers: [
+                    PersonObject(
+                        id: 1,
+                        name: "Alsey Coleman Miller"
+                    )
+            ]),
+            EventObject(
+                id: 200,
+                name: "Second Event",
+                start: Date(timeIntervalSince1970: 60 * 60 * 2),
+                speakers: [
+                    PersonObject(
+                        id: 2,
+                        name: "John Apple"
+                    )
+            ])
+        ]
+        
+        let now = Date()
+        
+        let predicate: Predicate = (#keyPath(EventObject.name)).compare(.matches, [.caseInsensitive], .value(.string(#"\w+ event"#)))
+            && (#keyPath(EventObject.start)) < now
+            && ((#keyPath(EventObject.speakers.name)).any(in: ["Alsey Coleman Miller"])
+            || (#keyPath(EventObject.speakers.name)).compare(.contains, .value(.string("John Apple"))))
+            && (#keyPath(EventObject.speakers.name)).any(in: ["Alsey Coleman Miller", "John Apple", "Test"])
+            && (#keyPath(EventObject.speakers.name)).all(in: ["John Apple", "Alsey Coleman Miller"])
+        
+        let nsPredicate = predicate.toFoundation()
+        
+        print(predicate)
+        print(nsPredicate)
+        
+        XCTAssertEqual((events as NSArray).filtered(using: nsPredicate).count, events.count)
     }
 }
 

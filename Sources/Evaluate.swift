@@ -387,10 +387,7 @@ internal extension Value {
             
         // collections
         case let (.in, .collection(lhs), .collection(rhs)):
-            switch modifier ?? .any {
-            case .any: return rhs.contains(lhs)
-            case .all: return rhs == lhs
-            }
+            return rhs.contains(lhs)
         case let (.in, lhs, .collection(rhs)):
             if let number = NSNumber(value: lhs) {
                 let numbers = rhs.compactMap({ NSNumber(value: $0) })
@@ -405,10 +402,7 @@ internal extension Value {
                 }
             }
         case let (.contains, .collection(lhs), .collection(rhs)):
-            switch modifier ?? .any {
-            case .any: return lhs.contains(rhs)
-            case .all: return lhs == rhs
-            }
+            return lhs.contains(rhs)
         case let (.contains, .collection(lhs), rhs):
             if let number = NSNumber(value: rhs) {
                 let numbers = lhs.compactMap({ NSNumber(value: $0) })

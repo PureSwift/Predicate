@@ -78,6 +78,44 @@ final class PredicateTests: XCTestCase {
         XCTAssert(try events[0].evaluate(with: predicate, log: { print("Encoder: \($0)") }))
         XCTAssertEqual(try events.filter(with: predicate), events)
     }
+    
+    func testPredicate5() {
+        
+        let events = [
+            Event(
+                id: 100,
+                name: "Awesome Event",
+                start: Date(timeIntervalSince1970: 0),
+                speakers: [
+                    Person(
+                        id: 1,
+                        name: "Alsey Coleman Miller"
+                    )
+            ]),
+            Event(
+                id: 200,
+                name: "Second Event",
+                start: Date(timeIntervalSince1970: 60 * 60 * 2),
+                speakers: [
+                    Person(
+                        id: 2,
+                        name: "John Apple"
+                    )
+            ])
+        ]
+        
+        let future = Date.distantFuture
+        
+        let predicate: Predicate = "name".compare(.matches, [.caseInsensitive], .value(.string(#"\w+ event"#)))
+            && "start" < future
+            && ("speakers.name".any(in: ["Alsey Coleman Miller"])
+                || "speakers.name".compare(.contains, .value(.string("John Apple"))))
+            && "speakers.name".any(in: ["Alsey Coleman Miller", "John Apple", "Test"])
+            && "speakers.name".all(in: ["John Apple", "Alsey Coleman Miller"])
+        
+        XCTAssertEqual(try events.filter(with: predicate), events)
+        XCTAssertEqual(predicate.description, #"(((name MATCHES[c] "\w+ event" AND start < 4001-01-01 00:00:00 +0000) AND (ANY speakers.name IN {"Alsey Coleman Miller"} OR speakers.name CONTAINS "John Apple")) AND ANY speakers.name IN {"Alsey Coleman Miller", "John Apple", "Test"}) AND ALL speakers.name IN {"John Apple", "Alsey Coleman Miller"}"#)
+    }
 }
 
 // MARK: - Supporting Types
