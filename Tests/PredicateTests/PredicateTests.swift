@@ -20,6 +20,7 @@ final class PredicateTests: XCTestCase {
         ("testPredicate4", testPredicate4),
         ("testPredicate5", testPredicate5),
         ("testPredicate6", testPredicate6),
+        ("testPredicate7", testPredicate7)
     ]
     
     func testDescription() {
@@ -184,6 +185,56 @@ final class PredicateTests: XCTestCase {
             && "speakers.@count" > 0
         
         XCTAssertEqual(try events.filter(with: predicate), events)
+    }
+    
+    func testPredicate7() {
+        
+        let events = [
+            EventObject(
+                id: 1,
+                name: "Event 1",
+                start: Date(timeIntervalSince1970: 0),
+                speakers: [
+                    PersonObject(
+                        id: 1,
+                        name: "Alsey Coleman Miller"
+                    )
+            ]),
+            EventObject(
+                id: 2,
+                name: "Event 2",
+                start: Date(timeIntervalSince1970: 60 * 60 * 2),
+                speakers: [
+                    PersonObject(
+                        id: 2,
+                        name: "John Apple"
+                    )
+            ]),
+            EventObject(
+                id: 3,
+                name: "Event 3",
+                start: Date(timeIntervalSince1970: 60 * 60 * 4),
+                speakers: [
+                    PersonObject(
+                        id: 1,
+                        name: "Alsey Coleman Miller"
+                    ),
+                    PersonObject(
+                        id: 2,
+                        name: "John Apple"
+                    )
+            ])
+        ]
+        
+        let future = Date.distantFuture
+        
+        let predicate: Predicate = (#keyPath(EventObject.name)).compare(.matches, [.caseInsensitive], .value(.string(#"event \d"#))) && [
+            (#keyPath(EventObject.start)) < future,
+            ("speakers.@count") > 0
+            ]
+        
+        XCTAssertEqual(try events.filter(with: predicate), events)
+        XCTAssertEqual(predicate.description, #"name MATCHES[c] "event \d" AND start < 4001-01-01 00:00:00 +0000 AND speakers.@count > 0"#)
     }
 }
 
