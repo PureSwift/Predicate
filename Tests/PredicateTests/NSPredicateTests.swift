@@ -126,6 +126,45 @@ final class NSPredicateTests: XCTestCase {
         
         XCTAssertEqual((events as NSArray).filtered(using: nsPredicate).count, events.count)
     }
+    
+    func testPredicate6() {
+        
+        let events = [
+            EventObject(
+                id: 100,
+                name: "Awesome Event",
+                start: Date(timeIntervalSince1970: 0),
+                speakers: [
+                    PersonObject(
+                        id: 1,
+                        name: "Alsey Coleman Miller"
+                    )
+            ]),
+            EventObject(
+                id: 200,
+                name: "Second Event",
+                start: Date(timeIntervalSince1970: 60 * 60 * 2),
+                speakers: [
+                    PersonObject(
+                        id: 2,
+                        name: "John Apple"
+                    )
+            ])
+        ]
+        
+        let now = Date()
+        
+        let predicate: Predicate = (#keyPath(EventObject.name)).compare(.matches, [.caseInsensitive], .value(.string(#"\w+ event"#)))
+            && (#keyPath(EventObject.start)) < now
+            && ("speakers.@count") > 0
+        
+        let nsPredicate = predicate.toFoundation()
+        
+        print(predicate)
+        print(nsPredicate)
+        
+        XCTAssertEqual((events as NSArray).filtered(using: nsPredicate).count, events.count)
+    }
 }
 
 // MARK: - Supporting Types
