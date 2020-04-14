@@ -267,6 +267,14 @@ extension Bool: PredicateValue {
     public var predicateValue: Value { return .bool(self) }
 }
 
+extension Int: PredicateValue {
+    public var predicateValue: Value { return .int64(numericCast(self)) }
+}
+
+extension UInt: PredicateValue {
+    public var predicateValue: Value { return .uint64(numericCast(self)) }
+}
+
 extension Int8: PredicateValue {
     public var predicateValue: Value { return .int8(self) }
 }

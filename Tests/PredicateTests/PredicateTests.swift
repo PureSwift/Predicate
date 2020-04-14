@@ -71,7 +71,7 @@ final class PredicateTests: XCTestCase {
         
         let predicate: Predicate = "name".compare(.contains, [.caseInsensitive], .value(.string("event")))
             && "name".`in`(["Awesome Event"])
-            && "id".`in`(identifiers.map { UInt16($0.rawValue) })
+            && "id".`in`(identifiers.map { $0.rawValue })
             && "start" < now
             && "speakers.name".all(in: ["Alsey Coleman Miller"])
         
