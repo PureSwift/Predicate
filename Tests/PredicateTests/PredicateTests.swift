@@ -13,6 +13,7 @@ final class PredicateTests: XCTestCase {
     
     static let allTests = [
         ("testDescription", testDescription),
+        ("testEncoder", testEncoder),
         ("testPredicate1", testPredicate1),
         ("testPredicate2", testPredicate2),
         ("testPredicate3", testPredicate3),
@@ -26,6 +27,30 @@ final class PredicateTests: XCTestCase {
         XCTAssertEqual(Predicate.comparison(.init(left: .keyPath("name"), right: .value(.string("Coleman")))).description, "name = \"Coleman\"")
         XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description, "name != NULL")
         XCTAssertEqual(Predicate.compound(.not(.keyPath("name") == .value(.null))) .description, "NOT name = NULL")
+    }
+    
+    func testEncoder() {
+        
+        let event = Event(
+            id: 100,
+            name: "Event",
+            start: Date(timeIntervalSince1970: 60 * 60 * 2),
+            speakers: [
+                Person(
+                    id: 1,
+                    name: "John Apple"
+                )
+        ])
+        
+        let context: PredicateContext = [
+            "id": .uint64(100),
+            "name": .string("Event"),
+            "start": .date(Date(timeIntervalSince1970: 60 * 60 * 2)),
+            "speakers.@count": .uint64(1),
+            "speakers.0.id": .uint64(1),
+            "speakers.0.name": .string("John Apple"),
+        ]
+        XCTAssertEqual(context, try PredicateContext(value: event))
     }
     
     func testPredicate1() {

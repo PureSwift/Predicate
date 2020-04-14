@@ -42,10 +42,21 @@ public extension Encodable where Self: PredicateEvaluatable {
     }
     
     internal func evaluate(with  predicate: Predicate, log: ((String) -> ())?) throws -> Bool {
+        let context = try PredicateContext(value: self, log: log)
+        return try context.evaluate(with: predicate)
+    }
+}
+
+public extension PredicateContext {
+    
+    init<T>(value: T) throws where T: Encodable {
+        try self.init(value: value, log: nil)
+    }
+    
+    internal init<T>(value: T, log: ((String) -> ())?) throws where T: Encodable {
         var encoder = PredicateEncoder()
         encoder.log = log
-        let context = try encoder.encode(self)
-        return try context.evaluate(with: predicate)
+        self = try encoder.encode(value)
     }
 }
 
