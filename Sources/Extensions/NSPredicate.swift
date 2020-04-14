@@ -10,6 +10,13 @@ import Foundation
 
 #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
 
+extension NSObject: PredicateEvaluatable {
+    
+    public func evaluate(with predicate: Predicate) throws -> Bool {
+        return predicate.toFoundation().evaluate(with: self)
+    }
+}
+
 public extension Predicate {
     
     func toFoundation() -> NSPredicate {
@@ -109,13 +116,13 @@ public extension Expression {
     func toFoundation() -> NSExpression {
         
         switch self {
-        case let .keyPath(keyPath): return NSExpression(forKeyPath: keyPath)
+        case let .keyPath(keyPath): return NSExpression(forKeyPath: keyPath.rawValue)
         case let .value(value): return NSExpression(forConstantValue: value.toFoundation())
         }
     }
 }
 
-public extension Value {
+internal extension Value {
     
     func toFoundation() -> AnyObject? {
         

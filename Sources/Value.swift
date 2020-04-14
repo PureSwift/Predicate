@@ -259,8 +259,24 @@ extension Date: PredicateValue {
     public var predicateValue: Value { return .date(self) }
 }
 
+extension UUID: PredicateValue {
+    public var predicateValue: Value { return .uuid(self) }
+}
+
 extension Bool: PredicateValue {
     public var predicateValue: Value { return .bool(self) }
+}
+
+extension Int: PredicateValue {
+    public var predicateValue: Value { return .int64(numericCast(self)) }
+}
+
+extension UInt: PredicateValue {
+    public var predicateValue: Value { return .uint64(numericCast(self)) }
+}
+
+extension Int8: PredicateValue {
+    public var predicateValue: Value { return .int8(self) }
 }
 
 extension Int16: PredicateValue {
@@ -275,6 +291,22 @@ extension Int64: PredicateValue {
     public var predicateValue: Value { return .int64(self) }
 }
 
+extension UInt8: PredicateValue {
+    public var predicateValue: Value { return .uint8(self) }
+}
+
+extension UInt16: PredicateValue {
+    public var predicateValue: Value { return .uint16(self) }
+}
+
+extension UInt32: PredicateValue {
+    public var predicateValue: Value { return .uint32(self) }
+}
+
+extension UInt64: PredicateValue {
+    public var predicateValue: Value { return .uint64(self) }
+}
+
 extension Float: PredicateValue {
     public var predicateValue: Value { return .float(self) }
 }
@@ -283,6 +315,6 @@ extension Double: PredicateValue {
     public var predicateValue: Value { return .double(self) }
 }
 
-extension Array where Element: PredicateValue {
+extension Sequence where Element: PredicateValue {
     public var predicateValue: Value { return .collection(self.map({ $0.predicateValue })) }
 }

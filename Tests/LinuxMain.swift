@@ -1,6 +1,6 @@
 import XCTest
-@testable import PredicateTests
+import PredicateTests
 
-XCTMain([
-    //
-    ])
+var tests = [XCTestCaseEntry]()
+tests += PredicateTests.allTests()
+XCTMain(tests)

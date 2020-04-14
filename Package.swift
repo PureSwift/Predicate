@@ -1,4 +1,4 @@
-// swift-tools-version:4.1
+// swift-tools-version:5.0
 import PackageDescription
 
 let package = Package(
@@ -22,6 +22,5 @@ let package = Package(
                 "Predicate"
             ]
         )
-    ],
-    swiftLanguageVersions: [4]
+    ]
 )

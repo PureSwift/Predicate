@@ -13,7 +13,7 @@ public enum Expression: Equatable, Hashable {
     case value(Value)
     
     /// Expression that invokes `value​For​Key​Path:​` with a given key path.
-    case keyPath(String)
+    case keyPath(PredicateKeyPath)
 }
 
 /// Type of predicate expression.
@@ -67,7 +67,7 @@ extension Expression: Codable {
             self = .value(expression)
         case .keyPath:
             let keyPath = try container.decode(String.self, forKey: .expression)
-            self = .keyPath(keyPath)
+            self = .keyPath(PredicateKeyPath(rawValue: keyPath))
         }
     }
     
@@ -80,7 +80,7 @@ extension Expression: Codable {
         case let .value(value):
             try container.encode(value, forKey: .expression)
         case let .keyPath(keyPath):
-            try container.encode(keyPath, forKey: .expression)
+            try container.encode(keyPath.rawValue, forKey: .expression)
         }
     }
 }
