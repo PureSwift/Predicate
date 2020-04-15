@@ -17,7 +17,9 @@ final class NSPredicateTests: XCTestCase {
     func testPredicate1() {
         
         let predicate: Predicate = #keyPath(PersonObject.id) > Int64(0)
-            && #keyPath(PersonObject.id) != Int64(99)
+            && (#keyPath(PersonObject.name)).compare(.notEqualTo, .value(.null))
+            && (#keyPath(PersonObject.id)) != Int64(99)
+            && (#keyPath(PersonObject.id)) == Int64(1)
             && (#keyPath(PersonObject.name)).compare(.beginsWith, .value(.string("C")))
             && (#keyPath(PersonObject.name)).compare(.contains, [.diacriticInsensitive, .caseInsensitive], .value(.string("COLE")))
         
@@ -26,7 +28,7 @@ final class NSPredicateTests: XCTestCase {
         print(predicate)
         print(converted)
         
-        XCTAssert(predicate.description == converted.description, "Invalid description")
+        XCTAssertEqual(predicate.description, converted.description)
         XCTAssert(converted.evaluate(with: PersonObject(id: 1, name: "Coléman")))
     }
     
@@ -219,6 +221,27 @@ final class NSPredicateTests: XCTestCase {
         
         XCTAssertEqual((events as NSArray).filtered(using: nsPredicate).count, events.count)
     }
+    
+    func testPredicate8() {
+        
+        let attributes = AttributesObject()
+        attributes.numbers = [0,1,2,3]
+        attributes.strings = ["1", "2", "3"]
+        
+        let predicate: Predicate = (#keyPath(AttributesObject.string)).compare(.equalTo, .value(.null))
+            //&& (#keyPath(AttributesObject.numbers)).compare(.contains, .value(.int8(1)))
+            && (#keyPath(AttributesObject.strings)).compare(.contains, .value(.string("1")))
+            //&& (#keyPath(AttributesObject.numbers)).compare(.contains, .value(.collection([.int8(1)])))
+            //&& (#keyPath(AttributesObject.strings)).compare(.contains, .value(.collection([.string("1")])))
+        
+        let nsPredicate = predicate.toFoundation()
+        
+        print(predicate)
+        print(nsPredicate)
+        
+        XCTAssertEqual(predicate.description, nsPredicate.description, "Invalid description")
+        XCTAssert(try attributes.evaluate(with: predicate))
+    }
 }
 
 // MARK: - Supporting Types
@@ -249,6 +272,34 @@ class EventObject: NSObject {
         self.name = name
         self.start = start
         self.speakers = speakers
+        super.init()
+    }
+}
+
+@objc(Attributes)
+class AttributesObject: NSObject {
+    
+    @objc var string: String? = nil
+    @objc var data: Data? = nil
+    @objc var date: Date? = nil
+    @objc var uuid: UUID? = nil
+    @objc var bool: Bool = false
+    @objc var int: Int = 0
+    @objc var uint: UInt = 0
+    @objc var uint8: UInt8 = 0
+    @objc var uint16: UInt16 = 0
+    @objc var uint32: UInt32 = 0
+    @objc var uint64: UInt64 = 0
+    @objc var int8: Int8 = 0
+    @objc var int16: Int16 = 0
+    @objc var int32: Int32 = 0
+    @objc var int64: Int64 = 0
+    @objc var float: Float = 0
+    @objc var double: Double = 0
+    @objc var numbers: [Int] = []
+    @objc var strings: [String] = []
+    
+    override init() {
         super.init()
     }
 }
