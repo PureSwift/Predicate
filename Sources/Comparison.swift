@@ -74,7 +74,7 @@ public extension Comparison {
         case greaterThanOrEqualTo   = ">="
         
         /// An equal-to predicate.
-        case equalTo                = "="
+        case equalTo                = "=="
         
         /// A not-equal-to predicate.
         case notEqualTo             = "!="

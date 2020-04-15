@@ -87,7 +87,7 @@ extension Value: CustomStringConvertible {
     public var description: String {
         
         switch self {
-        case .null:                 return "NULL"
+        case .null:                 return "nil"
         case let .string(value):    return "\"\(value)\""
         case let .data(value):      return value.description
         case let .date(value):      return value.description

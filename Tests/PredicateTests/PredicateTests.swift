@@ -25,9 +25,9 @@ final class PredicateTests: XCTestCase {
     
     func testDescription() {
         
-        XCTAssertEqual((.keyPath("name") == .value(.string("Coleman"))).description, "name = \"Coleman\"")
-        XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description, "name != NULL")
-        XCTAssertEqual((!(.keyPath("name") == .value(.null))).description, "NOT name = NULL")
+        XCTAssertEqual((.keyPath("name") == .value(.string("Coleman"))).description, "name == \"Coleman\"")
+        XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description, "name != nil")
+        XCTAssertEqual((!(.keyPath("name") == .value(.null))).description, "NOT name == nil")
     }
     
     func testEncoder() {

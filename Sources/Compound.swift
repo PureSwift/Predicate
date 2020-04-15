@@ -62,7 +62,6 @@ extension Compound: CustomStringConvertible {
     public var description: String {
         
         guard subpredicates.isEmpty == false else {
-            
             return "(Empty \(type) predicate)"
         }
         
@@ -73,26 +72,24 @@ extension Compound: CustomStringConvertible {
             let showType: Bool
             
             if index == 0 {
-                
                 showType = subpredicates.count == 1
-                
             } else {
-                
                 showType = true
-                
                 text += " "
             }
             
             if showType {
-                
                 text += type.rawValue + " "
             }
             
             let includeBrackets: Bool
             
             switch predicate {
-            case .compound: includeBrackets = true
-            case .comparison, .value: includeBrackets = false
+            case .compound:
+                includeBrackets = true
+            case .comparison,
+                 .value:
+                includeBrackets = false
             }
             
             text += includeBrackets ? "(" + predicate.description + ")" : predicate.description
@@ -116,7 +113,6 @@ extension Compound: Codable {
     public init(from decoder: Decoder) throws {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         let type = try container.decode(Compound.Logical​Type.self, forKey: .type)
         
         switch type {
@@ -135,7 +131,6 @@ extension Compound: Codable {
     public func encode(to encoder: Encoder) throws {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
         try container.encode(type, forKey: .type)
         
         switch self {
@@ -152,26 +147,21 @@ extension Compound: Codable {
 // MARK: - Predicate Operators
 
 public func && (lhs: Predicate, rhs: Predicate) -> Predicate {
-    
     return .compound(.and([lhs, rhs]))
 }
 
 public func && (lhs: Predicate, rhs: [Predicate]) -> Predicate {
-    
     return .compound(.and([lhs] + rhs))
 }
 
 public func || (lhs: Predicate, rhs: Predicate) -> Predicate {
-    
     return .compound(.or([lhs, rhs]))
 }
 
 public func || (lhs: Predicate, rhs: [Predicate]) -> Predicate {
-    
     return .compound(.or([lhs] + rhs))
 }
 
 public prefix func ! (rhs: Predicate) -> Predicate {
-    
     return .compound(.not(rhs))
 }
