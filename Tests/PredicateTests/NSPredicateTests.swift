@@ -14,6 +14,16 @@ import XCTest
 
 final class NSPredicateTests: XCTestCase {
     
+    func testDescription() {
+        
+        XCTAssertEqual((.keyPath("name") == .value(.string("Coleman"))).description,
+                       NSPredicate(format: "name == \"Coleman\"").description)
+        XCTAssertEqual(((.keyPath("name") != .value(.null)) as Predicate).description,
+                       NSPredicate(format: "name != nil").description)
+        XCTAssertEqual((!(.keyPath("name") == .value(.null))).description,
+                       NSPredicate(format: "NOT name == nil").description)
+    }
+    
     func testPredicate1() {
         
         let predicate: Predicate = #keyPath(PersonObject.id) > Int64(0)
@@ -225,13 +235,15 @@ final class NSPredicateTests: XCTestCase {
     func testPredicate8() {
         
         let attributes = AttributesObject()
+        attributes.data = Data()
         attributes.numbers = [0,1,2,3]
         attributes.strings = ["1", "2", "3"]
         
         let predicate: Predicate = (#keyPath(AttributesObject.string)).compare(.equalTo, .value(.null))
-            //&& (#keyPath(AttributesObject.numbers)).compare(.contains, .value(.int8(1)))
+            && (#keyPath(AttributesObject.data)).compare(.notEqualTo, .value(.null))
+            && (#keyPath(AttributesObject.numbers)).compare(.contains, .value(.int8(1)))
             && (#keyPath(AttributesObject.strings)).compare(.contains, .value(.string("1")))
-            //&& (#keyPath(AttributesObject.numbers)).compare(.contains, .value(.collection([.int8(1)])))
+            //&& (#keyPath(AttributesObject.numbers)).all(in: [1])
             //&& (#keyPath(AttributesObject.strings)).compare(.contains, .value(.collection([.string("1")])))
         
         let nsPredicate = predicate.toFoundation()
