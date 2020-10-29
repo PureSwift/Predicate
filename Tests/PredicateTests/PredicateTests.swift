@@ -191,36 +191,36 @@ final class PredicateTests: XCTestCase {
     func testPredicate7() {
         
         let events = [
-            EventObject(
+            Event(
                 id: 1,
                 name: "Event 1",
                 start: Date(timeIntervalSince1970: 0),
                 speakers: [
-                    PersonObject(
+                    Person(
                         id: 1,
                         name: "Alsey Coleman Miller"
                     )
             ]),
-            EventObject(
+            Event(
                 id: 2,
                 name: "Event 2",
                 start: Date(timeIntervalSince1970: 60 * 60 * 2),
                 speakers: [
-                    PersonObject(
+                    Person(
                         id: 2,
                         name: "John Apple"
                     )
             ]),
-            EventObject(
+            Event(
                 id: 3,
                 name: "Event 3",
                 start: Date(timeIntervalSince1970: 60 * 60 * 4),
                 speakers: [
-                    PersonObject(
+                    Person(
                         id: 1,
                         name: "Alsey Coleman Miller"
                     ),
-                    PersonObject(
+                    Person(
                         id: 2,
                         name: "John Apple"
                     )
