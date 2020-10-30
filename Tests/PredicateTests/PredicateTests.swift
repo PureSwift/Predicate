@@ -229,8 +229,8 @@ final class PredicateTests: XCTestCase {
         
         let future = Date.distantFuture
         
-        let predicate: Predicate = (#keyPath(EventObject.name)).compare(.matches, [.caseInsensitive], .value(.string(#"event \d"#))) && [
-            (#keyPath(EventObject.start)) < future,
+        let predicate: Predicate = ("name").compare(.matches, [.caseInsensitive], .value(.string(#"event \d"#))) && [
+            ("start") < future,
             ("speakers.@count") > 0
             ]
         
