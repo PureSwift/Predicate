@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
 
-    buildroot-armv7:
-        name: Buildroot Armv7
+    buildroot-armv7-build:
+        name: Build Armv7
         runs-on: ubuntu-20.04
         container: colemancda/swift-buildroot:amd64-prebuilt-armv7
         steps:
@@ -22,11 +22,19 @@ jobs:
         - name: Archive Build artifacts
           uses: actions/upload-artifact@v3
           with:
-            name: swiftpm-build
-            path: .build/*
+            name: swiftpm-build-armv7
+            path: .build/*/*.xctest
+
+    buildroot-armv7-test:
+        name: Test Armv7
+        runs-on: [self-hosted, linux, ARM64, arch]
+        needs: buildroot-armv7-build
+        steps:
+        - name: Download artifacts
+          uses: actions/download-artifact@v3
+          with: 
+            name: swiftpm-build-armv7
         - name: Test
           run: |
-            cd /usr/src/buildroot-external
-            export SWIFT_ARCH=armv7
-            export BUILDROOT_SRCDIR=./buildroot-${SWIFT_ARCH}
-            chroot ${BUILDROOT_SRCDIR}/output/target /usr/bin/qemu-arm-static /usr/bin/PredicatePackageTests.xctest
+            chmod +x /home/coleman/Developer/actions-runner/_work/Predicate/Predicate/release/PredicatePackageTests.xctest
+            schroot -c buildroot-armv7 /usr/bin/qemu-arm-static /home/coleman/Developer/actions-runner/_work/Predicate/Predicate/release/PredicatePackageTests.xctest
