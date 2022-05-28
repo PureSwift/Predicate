@@ -24,17 +24,3 @@ jobs:
           with:
             name: swiftpm-build-armv7
             path: .build/*/*.xctest
-
-    buildroot-armv7-test:
-        name: Test Armv7
-        runs-on: [self-hosted, linux, ARM64, arch]
-        needs: buildroot-armv7-build
-        steps:
-        - name: Download artifacts
-          uses: actions/download-artifact@v3
-          with: 
-            name: swiftpm-build-armv7
-        - name: Test
-          run: |
-            chmod +x /home/coleman/Developer/actions-runner/_work/Predicate/Predicate/release/PredicatePackageTests.xctest
-            schroot -c buildroot-armv7 /usr/bin/qemu-arm-static /home/coleman/Developer/actions-runner/_work/Predicate/Predicate/release/PredicatePackageTests.xctest
