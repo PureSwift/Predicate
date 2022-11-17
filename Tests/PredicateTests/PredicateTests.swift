@@ -151,7 +151,9 @@ final class PredicateTests: XCTestCase {
             && "speakers.name".all(in: ["John Apple", "Alsey Coleman Miller"])
         
         XCTAssertEqual(try events.filter(with: predicate), events)
+        #if !os(WASI)
         XCTAssertEqual(predicate.description, #"(((name MATCHES[c] "\w+ event" AND start < 4001-01-01 00:00:00 +0000) AND (ANY speakers.name IN {"Alsey Coleman Miller"} OR speakers.name CONTAINS "John Apple")) AND ANY speakers.name IN {"Alsey Coleman Miller", "John Apple", "Test"}) AND ALL speakers.name IN {"John Apple", "Alsey Coleman Miller"}"#)
+        #endif
     }
     
     func testPredicate6() {
@@ -235,7 +237,9 @@ final class PredicateTests: XCTestCase {
             ]
         
         XCTAssertEqual(try events.filter(with: predicate), events)
+        #if !os(WASI)
         XCTAssertEqual(predicate.description, #"name MATCHES[c] "event \d" AND start < 4001-01-01 00:00:00 +0000 AND speakers.@count > 0"#)
+        #endif
     }
 }
 
