@@ -1,14 +1,12 @@
 name: Swift
-
 on: [push]
-
 jobs:
-  build:
-    name: Build
+  mac:
+    name: macOS
     strategy:
       matrix:
-        swift: [5.5.3, 5.6.3, 5.7]
-        os: [ubuntu-20.04, macos-latest]
+        swift: [5.6.3, 5.7.1]
+        os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Install Swift
@@ -23,12 +21,14 @@ jobs:
       run: swift build -c debug
     - name: Build (Release)
       run: swift build -c release
+    - name: Test (Debug)
+      run: swift test --configuration debug
 
-  test-linux:
-    name: Test Linux
+  linux:
+    name: Linux
     strategy:
       matrix:
-        swift: [5.5.3, 5.6.3, 5.7]
+        swift: [5.1.5, 5.5, 5.6.3, 5.7.1]
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
@@ -40,20 +40,9 @@ jobs:
       uses: actions/checkout@v2
     - name: Swift Version
       run: swift --version
+    - name: Build (Debug)
+      run: swift build -c debug
+    - name: Build (Release)
+      run: swift build -c release
     - name: Test (Debug)
       run: swift test --configuration debug
-    - name: Test (Release)
-      run: swift test --configuration release -Xswiftc -enable-testing
-
-  test-macOS:
-    name: Test macOS
-    runs-on: macos-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Swift Version
-      run: swift --version
-    - name: Test (Debug)
-      run: swift test --configuration debug --enable-code-coverage
-    - name: Test (Release)
-      run: swift test --configuration release -Xswiftc -enable-testing --enable-code-coverage
