@@ -8,7 +8,7 @@
 import Foundation
 
 /// Context for evaluating predicates.
-public struct PredicateContext: Equatable, Hashable {
+public struct PredicateContext: Equatable, Hashable, Sendable {
     
     public typealias KeyPath = PredicateKeyPath
     

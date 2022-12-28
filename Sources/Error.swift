@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum PredicateError: Error {
+public enum PredicateError: Error, Sendable {
     
     case invalidKeyPath(PredicateKeyPath)
     case invalidComparison(Value, Value, Comparison.Operator, Comparison.Modifier?, Set<Comparison.Option>)

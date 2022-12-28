@@ -9,7 +9,7 @@
 import Foundation
 
 /// Constant value used in predicate expressions.
-public enum Value: Equatable, Hashable {
+public enum Value: Equatable, Hashable, Sendable {
     
     case null
     case string(String)
@@ -33,7 +33,7 @@ public enum Value: Equatable, Hashable {
 // MARK: - Supporting Types
 
 /// Predicate Value Type
-public enum ValueType: String, Codable {
+public enum ValueType: String, Codable, Sendable {
     
     case null
     case string
@@ -129,7 +129,7 @@ extension Value: CustomStringConvertible {
 
 extension Value: Codable {
     
-    internal enum CodingKeys: String, CodingKey {
+    internal enum CodingKeys: String, CodingKey, Sendable {
         
         case type
         case value

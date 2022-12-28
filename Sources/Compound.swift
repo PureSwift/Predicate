@@ -7,7 +7,7 @@
 //
 
 /// Predicate type used to represent logical “gate” operations (AND/OR/NOT) and comparison operations.
-public indirect enum Compound: Equatable, Hashable {
+public indirect enum Compound: Equatable, Hashable, Sendable {
     
     case and([Predicate])
     case or([Predicate])
@@ -42,7 +42,7 @@ public extension Compound {
 public extension Compound {
     
     /// Possible Compund Predicate types.
-    enum Logical​Type: String, Codable {
+    enum Logical​Type: String, Codable, Sendable {
         
         /// A logical NOT predicate.
         case not = "NOT"
@@ -104,7 +104,7 @@ extension Compound: CustomStringConvertible {
 
 extension Compound: Codable {
     
-    internal enum CodingKeys: String, CodingKey {
+    internal enum CodingKeys: String, CodingKey, Sendable {
         
         case type
         case predicates
