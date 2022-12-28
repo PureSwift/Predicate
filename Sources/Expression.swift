@@ -108,7 +108,7 @@ public extension Expression {
     }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension Expression: Sendable {}
 extension ExpressionType: Sendable {}

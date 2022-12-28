@@ -185,7 +185,7 @@ extension PredicateKeyPath.Operator: CustomStringConvertible {
     }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension PredicateKeyPath: Sendable {}
 extension PredicateKeyPath.Key: Sendable {}

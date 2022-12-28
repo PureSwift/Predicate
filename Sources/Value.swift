@@ -319,7 +319,7 @@ extension Sequence where Element: PredicateValue {
     public var predicateValue: Value { return .collection(self.map({ $0.predicateValue })) }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension Value: Sendable {}
 extension ValueType: Sendable {}

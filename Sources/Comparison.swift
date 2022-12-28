@@ -304,7 +304,7 @@ public extension String {
     }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension Comparison: Sendable {}
 extension Comparison.Modifier: Sendable {}

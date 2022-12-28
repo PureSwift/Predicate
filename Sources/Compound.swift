@@ -166,7 +166,7 @@ public prefix func ! (rhs: Predicate) -> Predicate {
     return .compound(.not(rhs))
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension Compound: Sendable {}
 extension Compound.Logical​Type: Sendable {}

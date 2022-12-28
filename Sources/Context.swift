@@ -108,7 +108,7 @@ extension PredicateContext: PredicateEvaluatable {
     }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension PredicateContext: Sendable {}
 

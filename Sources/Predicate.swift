@@ -93,7 +93,7 @@ extension Predicate: Codable {
     }
 }
 
-#if swift(>=5.5)
+#if swift(>=5.7)
 
 extension Predicate: Sendable {}
 extension PredicateType: Sendable {}
