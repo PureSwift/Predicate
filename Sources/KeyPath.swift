@@ -6,7 +6,7 @@
 //
 
 /// Key Path
-public struct PredicateKeyPath: Equatable, Hashable, Sendable {
+public struct PredicateKeyPath: Equatable, Hashable {
     
     public var keys: [Key]
     
@@ -116,7 +116,7 @@ extension PredicateKeyPath: ExpressibleByArrayLiteral {
 
 public extension PredicateKeyPath {
     
-    enum Key: Equatable, Hashable, Sendable {
+    enum Key: Equatable, Hashable {
         case property(String)
         case index(UInt)
         case `operator`(Operator)
@@ -162,7 +162,7 @@ extension PredicateKeyPath.Key: RawRepresentable {
 
 public extension PredicateKeyPath {
     
-    enum Operator: String, Sendable {
+    enum Operator: String {
         case count      = "@count"
         case sum        = "@sum"
         case min        = "@min"
@@ -184,3 +184,11 @@ extension PredicateKeyPath.Operator: CustomStringConvertible {
         return rawValue
     }
 }
+
+#if swift(>=5.5)
+
+extension PredicateKeyPath: Sendable {}
+extension PredicateKeyPath.Key: Sendable {}
+extension PredicateKeyPath.Operator: Sendable {}
+
+#endif

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Context for evaluating predicates.
-public struct PredicateContext: Equatable, Hashable, Sendable {
+public struct PredicateContext: Equatable, Hashable {
     
     public typealias KeyPath = PredicateKeyPath
     
@@ -107,3 +107,9 @@ extension PredicateContext: PredicateEvaluatable {
         return try lhs.compare(rhs, operator: predicate.type, modifier: predicate.modifier, options: predicate.options)
     }
 }
+
+#if swift(>=5.5)
+
+extension PredicateContext: Sendable {}
+
+#endif

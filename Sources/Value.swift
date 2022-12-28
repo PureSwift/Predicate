@@ -9,7 +9,7 @@
 import Foundation
 
 /// Constant value used in predicate expressions.
-public enum Value: Equatable, Hashable, Sendable {
+public enum Value: Equatable, Hashable {
     
     case null
     case string(String)
@@ -33,7 +33,7 @@ public enum Value: Equatable, Hashable, Sendable {
 // MARK: - Supporting Types
 
 /// Predicate Value Type
-public enum ValueType: String, Codable, Sendable {
+public enum ValueType: String, Codable {
     
     case null
     case string
@@ -129,7 +129,7 @@ extension Value: CustomStringConvertible {
 
 extension Value: Codable {
     
-    internal enum CodingKeys: String, CodingKey, Sendable {
+    internal enum CodingKeys: String, CodingKey {
         
         case type
         case value
@@ -318,3 +318,10 @@ extension Double: PredicateValue {
 extension Sequence where Element: PredicateValue {
     public var predicateValue: Value { return .collection(self.map({ $0.predicateValue })) }
 }
+
+#if swift(>=5.5)
+
+extension Value: Sendable {}
+extension ValueType: Sendable {}
+
+#endif

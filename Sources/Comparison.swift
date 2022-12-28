@@ -7,7 +7,7 @@
 //
 
 /// Comparison Predicate
-public struct Comparison: Equatable, Hashable, Codable, Sendable {
+public struct Comparison: Equatable, Hashable, Codable {
     
     public var left: Expression
     
@@ -37,13 +37,13 @@ public struct Comparison: Equatable, Hashable, Codable, Sendable {
 
 public extension Comparison {
 
-    enum Modifier: String, Codable, Sendable {
+    enum Modifier: String, Codable {
         
         case all        = "ALL"
         case any        = "ANY"
     }
     
-    enum Option: String, Codable, Sendable {
+    enum Option: String, Codable {
         
         /// A case-insensitive predicate.
         case caseInsensitive        = "c"
@@ -59,7 +59,7 @@ public extension Comparison {
         case localeSensitive        = "l"
     }
     
-    enum Operator: String, Codable, Sendable {
+    enum Operator: String, Codable {
         
         /// A less-than predicate.
         case lessThan               = "<"
@@ -303,3 +303,12 @@ public extension String {
         return .comparison(comparison)
     }
 }
+
+#if swift(>=5.5)
+
+extension Comparison: Sendable {}
+extension Comparison.Modifier: Sendable {}
+extension Comparison.Option: Sendable {}
+extension Comparison.Operator: Sendable {}
+
+#endif

@@ -7,7 +7,7 @@
 //
 
 /// Used to represent expressions in a predicate.
-public enum Expression: Equatable, Hashable, Sendable {
+public enum Expression: Equatable, Hashable {
     
     /// Expression that represents a given constant value.
     case value(Value)
@@ -17,7 +17,7 @@ public enum Expression: Equatable, Hashable, Sendable {
 }
 
 /// Type of predicate expression.
-public enum ExpressionType: String, Codable, Sendable {
+public enum ExpressionType: String, Codable {
     
     case value
     case keyPath
@@ -50,7 +50,7 @@ extension Expression: CustomStringConvertible {
 
 extension Expression: Codable {
     
-    internal enum CodingKeys: String, CodingKey, Sendable {
+    internal enum CodingKeys: String, CodingKey {
         
         case type
         case expression
@@ -107,3 +107,10 @@ public extension Expression {
         return .comparison(comparison)
     }
 }
+
+#if swift(>=5.5)
+
+extension Expression: Sendable {}
+extension ExpressionType: Sendable {}
+
+#endif

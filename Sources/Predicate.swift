@@ -8,7 +8,7 @@
 
 /// You use predicates to represent logical conditions,
 /// used for describing objects in persistent stores and in-memory filtering of objects.
-public enum Predicate: Equatable, Hashable, Sendable {
+public enum Predicate: Equatable, Hashable {
     
     case comparison(Comparison)
     case compound(Compound)
@@ -16,7 +16,7 @@ public enum Predicate: Equatable, Hashable, Sendable {
 }
 
 /// Predicate Type
-public enum PredicateType: String, Codable, Sendable {
+public enum PredicateType: String, Codable {
     
     case comparison
     case compound
@@ -53,7 +53,7 @@ extension Predicate: CustomStringConvertible {
 
 extension Predicate: Codable {
     
-    internal enum CodingKeys: String, CodingKey, Sendable {
+    internal enum CodingKeys: String, CodingKey {
         
         case type
         case predicate
@@ -92,3 +92,10 @@ extension Predicate: Codable {
         }
     }
 }
+
+#if swift(>=5.5)
+
+extension Predicate: Sendable {}
+extension PredicateType: Sendable {}
+
+#endif
