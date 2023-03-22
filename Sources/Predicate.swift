@@ -92,3 +92,10 @@ extension Predicate: Codable {
         }
     }
 }
+
+#if swift(>=5.7)
+
+extension Predicate: Sendable {}
+extension PredicateType: Sendable {}
+
+#endif

@@ -12,3 +12,9 @@ public enum PredicateError: Error {
     case invalidKeyPath(PredicateKeyPath)
     case invalidComparison(Value, Value, Comparison.Operator, Comparison.Modifier?, Set<Comparison.Option>)
 }
+
+#if swift(>=5.7)
+
+extension PredicateError: Sendable {}
+
+#endif

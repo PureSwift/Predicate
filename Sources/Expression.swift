@@ -107,3 +107,10 @@ public extension Expression {
         return .comparison(comparison)
     }
 }
+
+#if swift(>=5.7)
+
+extension Expression: Sendable {}
+extension ExpressionType: Sendable {}
+
+#endif

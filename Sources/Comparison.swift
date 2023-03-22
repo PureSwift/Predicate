@@ -303,3 +303,12 @@ public extension String {
         return .comparison(comparison)
     }
 }
+
+#if swift(>=5.7)
+
+extension Comparison: Sendable {}
+extension Comparison.Modifier: Sendable {}
+extension Comparison.Option: Sendable {}
+extension Comparison.Operator: Sendable {}
+
+#endif

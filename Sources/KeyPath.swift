@@ -184,3 +184,11 @@ extension PredicateKeyPath.Operator: CustomStringConvertible {
         return rawValue
     }
 }
+
+#if swift(>=5.7)
+
+extension PredicateKeyPath: Sendable {}
+extension PredicateKeyPath.Key: Sendable {}
+extension PredicateKeyPath.Operator: Sendable {}
+
+#endif

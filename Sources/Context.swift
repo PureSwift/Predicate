@@ -107,3 +107,9 @@ extension PredicateContext: PredicateEvaluatable {
         return try lhs.compare(rhs, operator: predicate.type, modifier: predicate.modifier, options: predicate.options)
     }
 }
+
+#if swift(>=5.7)
+
+extension PredicateContext: Sendable {}
+
+#endif
